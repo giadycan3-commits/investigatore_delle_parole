@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Il Laboratorio delle Parole — Grammatica Inquiry · Classe 5ª</title>
+<meta name="description" content="Simulatore di grammatica italiana con metodo inquiry per la classe 5ª della scuola primaria: osserva, ipotizza, sperimenta, concludi, applica.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800;900&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ SISTEMA CROMATICO DEL QUADERNO ============ */
+:root{
+  --paper:#FAF1DF; --paper2:#FFFDF4; --paper3:#F4E8CF;
+  --ink:#22357C; --ink-deep:#16224F; --ink-soft:#4A5A96;
+  --red:#E23A3A; --yellow:#FFD449; --green:#2E9E5B; --blue:#2D7FF9;
+  --magenta:#E84FAF; --amber:#F59E0B; --teal:#12A5B0;
+  --ok:#2E9E5B; --warn:#F59E0B; --danger:#E23A3A; --info:#2D7FF9;
+  --hl:#FFD449; --hl-soft:rgba(255,212,73,.55);
+  --rule-line:rgba(45,127,249,.13); --margin-line:rgba(226,58,58,.30);
+  --shadow:0 6px 0 rgba(34,53,124,.14);
+  --tscale:1;
+  --fd:'Fredoka','Trebuchet MS',sans-serif;
+  --fb:'Nunito',system-ui,sans-serif;
+  --fh:'Caveat','Comic Sans MS',cursive;
+  --head-h:64px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--fb); color:var(--ink); background:var(--paper);
+  background-image:
+    radial-gradient(1100px 500px at 85% -5%, rgba(232,79,175,.07), transparent 60%),
+    radial-gradient(900px 600px at -10% 30%, rgba(45,127,249,.08), transparent 55%),
+    radial-gradient(800px 500px at 60% 110%, rgba(255,212,73,.14), transparent 60%),
+    repeating-linear-gradient(transparent 0 31px, var(--rule-line) 31px 32px);
+  min-height:100vh; overflow-x:hidden; line-height:1.55;
+}
+body::before{ /* margine rosso del quaderno */
+  content:""; position:fixed; top:0; bottom:0; left:56px; width:2px;
+  background:var(--margin-line); pointer-events:none; z-index:0;
+}
+body::after{ /* grana carta */
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:1; opacity:.05; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.7'/%3E%3C/svg%3E");
+}
+::selection{background:var(--hl); color:var(--ink-deep)}
+/* scrollbar del quaderno */
+::-webkit-scrollbar{width:13px;height:13px}
+::-webkit-scrollbar-track{background:var(--paper3);border-left:2px solid rgba(34,53,124,.15)}
+::-webkit-scrollbar-thumb{background:var(--ink);border-radius:8px;border:3px solid var(--paper3)}
+::-webkit-scrollbar-thumb:hover{background:var(--red)}
+*{scrollbar-width:thin;scrollbar-color:var(--ink) var(--paper3)}
+button{font-family:inherit;color:inherit;cursor:pointer;background:none;border:none}
+button:focus-visible,a:focus-visible,input:focus-visible,summary:focus-visible{outline:3px dashed var(--blue);outline-offset:3px;border-radius:8px}
+input,select{font-family:inherit;color:var(--ink)}
+[hidden]{display:none!important}
+img,svg{display:block;max-width:100%}
+mark{background:none;color:inherit}
+
+/* alta leggibilità */
+body.hileg{font-family:Verdana,Tahoma,Arial,sans-serif;letter-spacing:.03em;word-spacing:.14em;line-height:1.85}
+body.hileg .cluecard,body.hileg .bubble,body.hileg .hand{font-family:Verdana,Tahoma,Arial,sans-serif;font-size:1.05rem}
+body.hileg h1,body.hileg h2,body.hileg h3,body.hileg .fd{font-family:Verdana,Tahoma,Arial,sans-serif}
+
+/* ============ HEADER FISSO A SPIRALE ============ */
+header.tb{
+  position:fixed;top:0;left:0;right:0;height:var(--head-h);z-index:100;
+  background:linear-gradient(120deg,var(--ink-deep),var(--ink) 55%,#2E4390);
+  display:flex;align-items:center;gap:14px;padding:0 18px;color:var(--paper2);
+  box-shadow:0 3px 0 rgba(22,34,79,.35);
+}
+header.tb::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:.12;
+  background-image:repeating-linear-gradient(115deg,transparent 0 14px,rgba(255,255,255,.35) 14px 15px)}
+.spiral{position:absolute;left:0;right:0;bottom:-11px;height:16px;display:flex;justify-content:space-around;pointer-events:none;z-index:101}
+.spiral i{width:11px;height:16px;border:3px solid var(--ink-deep);border-radius:50%;background:linear-gradient(var(--paper) 45%,#d9c9a8)}
+.brand{display:flex;align-items:center;gap:10px;z-index:2;text-decoration:none;color:inherit}
+.brand svg{width:34px;height:34px;filter:drop-shadow(0 2px 0 rgba(0,0,0,.25))}
+.brand b{font-family:var(--fd);font-weight:600;font-size:1.12rem;letter-spacing:.3px;white-space:nowrap}
+.brand small{display:block;font-size:.62rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--yellow)}
+nav.mainnav{display:flex;gap:4px;margin-left:8px;z-index:2}
+.nlink{font-family:var(--fd);font-weight:500;font-size:.92rem;color:var(--paper2);padding:8px 12px;border-radius:10px;position:relative;display:flex;align-items:center;gap:6px;text-decoration:none;transition:background .2s}
+.nlink:hover{background:rgba(255,255,255,.14)}
+.nlink.active{background:rgba(255,212,73,.2);color:var(--yellow)}
+.nlink .badge{background:var(--magenta);color:#fff;font-size:.62rem;font-weight:900;min-width:17px;height:17px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;padding:0 4px}
+.hright{margin-left:auto;display:flex;align-items:center;gap:10px;z-index:2}
+.starcount{font-family:var(--fd);font-weight:600;background:rgba(255,255,255,.12);border:2px solid rgba(255,212,73,.55);padding:5px 12px;border-radius:999px;font-size:.92rem;display:flex;gap:6px;align-items:center;white-space:nowrap}
+.starcount b{color:var(--yellow)}
+.iconbtn{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.25);font-size:1.15rem;display:flex;align-items:center;justify-content:center;transition:transform .15s,background .2s}
+.iconbtn:hover{background:rgba(255,255,255,.22);transform:translateY(-2px)}
+.iconbtn.off{opacity:.75;border-style:dashed}
+.namechip{font-family:var(--fh);font-size:1.15rem;color:var(--yellow);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+main{position:relative;z-index:2;padding-top:calc(var(--head-h) + 22px)}
+section.view{max-width:1240px;margin:0 auto;padding:10px 22px 90px}
+#metodo,#casi{scroll-margin-top:110px}
+
+/* ============ BOTTONI ============ */
+.btn{font-family:var(--fd);font-weight:600;font-size:1rem;padding:12px 22px;border-radius:14px;border:2.5px solid var(--ink-deep);background:var(--paper2);color:var(--ink-deep);box-shadow:0 4px 0 var(--ink-deep);transition:transform .12s,box-shadow .12s,background .2s;display:inline-flex;align-items:center;gap:9px;justify-content:center;text-decoration:none}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--ink-deep)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink-deep)}
+.btn.primary{background:linear-gradient(135deg,var(--red),#C22525);color:#fff;border-color:#8E1B1B;box-shadow:0 4px 0 #8E1B1B}
+.btn.primary:hover{box-shadow:0 6px 0 #8E1B1B}
+.btn.primary:active{box-shadow:0 1px 0 #8E1B1B}
+.btn.sunny{background:linear-gradient(135deg,var(--yellow),var(--amber));border-color:#9A6A06;box-shadow:0 4px 0 #9A6A06;color:var(--ink-deep)}
+.btn.sunny:hover{box-shadow:0 6px 0 #9A6A06}.btn.sunny:active{box-shadow:0 1px 0 #9A6A06}
+.btn.ghost{background:transparent;box-shadow:none;border-style:dashed}
+.btn.ghost:hover{background:rgba(34,53,124,.06);transform:none}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none!important;box-shadow:0 4px 0 var(--ink-deep)!important;filter:grayscale(.4)}
+.btn.small{padding:8px 14px;font-size:.88rem;border-radius:11px}
+@keyframes pulseGlow{0%,100%{box-shadow:0 4px 0 #8E1B1B,0 0 0 0 rgba(226,58,58,.5)}50%{box-shadow:0 4px 0 #8E1B1B,0 0 0 12px rgba(226,58,58,0)}}
+.btn.pulse{animation:pulseGlow 1.4s infinite}
+
+/* ============ HERO ============ */
+.hero{position:relative;display:grid;grid-template-columns:1.25fr .95fr;gap:34px;align-items:center;padding:34px 0 26px}
+.eyebrow{font-weight:900;font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:34px;height:3px;background:linear-gradient(90deg,var(--red),var(--magenta));border-radius:2px}
+h1.big{font-family:var(--fd);font-weight:700;font-size:clamp(2.1rem,4.6vw,3.6rem);line-height:1.12;color:var(--ink-deep);margin:14px 0 14px}
+.hl-mark{position:relative;white-space:nowrap;display:inline-block}
+.hl-mark::before{content:"";position:absolute;left:-6px;right:-8px;top:52%;bottom:2%;background:linear-gradient(100deg,var(--yellow) 20%,#FFC93C 60%,rgba(232,79,175,.5));z-index:-1;transform:rotate(-1.2deg);border-radius:6px 14px 8px 16px}
+.hero p.lead{font-size:1.08rem;max-width:56ch;color:var(--ink);font-weight:600}
+.hero p.lead b{color:var(--red)}
+.nameform{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:22px 0 8px}
+.nameform label{font-family:var(--fh);font-size:1.4rem;color:var(--ink-soft);transform:rotate(-2deg)}
+.nameform input{font-family:var(--fh);font-size:1.35rem;padding:8px 14px;border:none;border-bottom:3px dashed var(--ink);background:rgba(255,255,255,.6);width:210px;color:var(--ink-deep);border-radius:8px 8px 0 0}
+.nameform input::placeholder{color:#9aa4c8}
+.herostats{display:flex;gap:14px;flex-wrap:wrap;margin-top:20px}
+.mini-stat{background:var(--paper2);border:2px solid var(--ink);border-radius:14px;padding:10px 16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px}
+.mini-stat .num{font-family:var(--fd);font-weight:700;font-size:1.5rem;color:var(--red)}
+.mini-stat small{font-weight:800;font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft)}
+.ring{width:52px;height:52px}
+.ring circle{fill:none;stroke-width:7}
+.ring .bg{stroke:var(--paper3)}
+.ring .fg{stroke:var(--green);stroke-linecap:round;transform:rotate(-90deg);transform-origin:center;transition:stroke-dashoffset 1s cubic-bezier(.3,1,.4,1)}
+.rankline{font-family:var(--fh);font-size:1.5rem;color:var(--magenta);margin-top:14px;transform:rotate(-1deg)}
+/* mascotte */
+.mascotzone{position:relative;display:flex;justify-content:center;padding:10px 0 26px}
+.mascot{width:min(240px,60vw);animation:bob 4.5s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-12px) rotate(2deg)}}
+.bubble{position:absolute;top:-6px;right:-4px;max-width:230px;background:var(--paper2);border:2.5px solid var(--ink);border-radius:16px 16px 16px 3px;padding:12px 16px;font-family:var(--fh);font-size:1.28rem;line-height:1.25;color:var(--ink-deep);box-shadow:var(--shadow);transition:opacity .4s;transform:rotate(1.5deg)}
+.bubble.fade{opacity:0}
+.bubble b{color:var(--red)}
+/* scarabocchi fluttuanti */
+.doodle{position:absolute;font-size:1.7rem;opacity:.5;pointer-events:none;animation:drift 7s ease-in-out infinite;filter:saturate(1.2);z-index:0;will-change:transform}
+@keyframes drift{0%,100%{margin-top:0;rotate:-6deg}50%{margin-top:-16px;rotate:8deg}}
+@keyframes riseIn{from{opacity:0;transform:translateY(26px) rotate(var(--rot,0deg))}to{opacity:1;transform:translateY(0) rotate(var(--rot,0deg))}}
+.rise{animation:riseIn .7s cubic-bezier(.2,.9,.3,1.2) both}
+
+/* ============ SEZIONE METODO ============ */
+.section-head{display:flex;align-items:baseline;gap:14px;margin:44px 0 20px;flex-wrap:wrap}
+.section-head h2{font-family:var(--fd);font-weight:700;font-size:clamp(1.5rem,2.6vw,2.1rem);color:var(--ink-deep)}
+.section-head .hand{font-family:var(--fh);font-size:1.35rem;color:var(--red);transform:rotate(-1.5deg)}
+.methodband{position:relative;background:linear-gradient(120deg,rgba(45,127,249,.08),rgba(232,79,175,.07) 55%,rgba(255,212,73,.14));border:2px solid var(--ink);border-radius:20px;padding:26px 22px;box-shadow:var(--shadow)}
+.msteps{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;position:relative}
+.msteps::before{content:"";position:absolute;top:34px;left:8%;right:8%;border-top:3px dashed rgba(34,53,124,.35);z-index:0}
+.mstep{position:relative;z-index:1;text-align:center;padding:0 4px}
+.mstep .ic{width:66px;height:66px;margin:0 auto 10px;border-radius:50%;background:var(--paper2);border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:1.7rem;box-shadow:0 4px 0 rgba(34,53,124,.25);transition:transform .2s}
+.mstep:hover .ic{transform:scale(1.12) rotate(-6deg)}
+.mstep b{font-family:var(--fd);font-weight:600;display:block;font-size:1.02rem;color:var(--ink-deep)}
+.mstep span{font-size:.8rem;font-weight:700;color:var(--ink-soft);display:block;margin-top:3px}
+.mstep .n{position:absolute;top:-6px;left:calc(50% + 18px);background:var(--red);color:#fff;font-weight:900;font-size:.68rem;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid var(--paper2)}
+
+/* ============ MAPPA DEI CASI ============ */
+.cases{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.mcard{position:relative;background:var(--paper2);border:2.5px solid var(--ink);border-radius:18px;padding:24px 20px 18px;box-shadow:var(--shadow);transform:rotate(var(--rot,0deg));transition:transform .25s,box-shadow .25s;display:flex;flex-direction:column;gap:10px}
+.mcard:hover{transform:rotate(0deg) translateY(-6px);box-shadow:0 12px 0 rgba(34,53,124,.16)}
+.tape{position:absolute;top:-13px;left:50%;transform:translateX(-50%) rotate(-2deg);width:96px;height:26px;background:linear-gradient(100deg,rgba(255,212,73,.85),rgba(255,201,60,.75));border-left:2px dashed rgba(255,255,255,.7);border-right:2px dashed rgba(255,255,255,.7);opacity:.92}
+.mcard .toprow{display:flex;align-items:center;gap:12px}
+.blob{width:58px;height:58px;border-radius:18px 22px 16px 24px;display:flex;align-items:center;justify-content:center;font-size:1.75rem;border:2.5px solid var(--ink-deep);flex:none;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.2)}
+.casochip{font-weight:900;font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--paper2);padding:3px 9px;border-radius:6px;display:inline-block}
+.mcard h3{font-family:var(--fd);font-weight:600;font-size:1.22rem;line-height:1.2;color:var(--ink-deep)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip-s{font-size:.68rem;font-weight:800;padding:3px 9px;border-radius:999px;border:1.5px solid var(--ink);background:rgba(45,127,249,.08);color:var(--ink)}
+.diff{font-size:.72rem;font-weight:800;color:var(--ink-soft)}
+.diff i{font-style:normal;color:var(--amber);letter-spacing:2px}
+.mcard p.obj{font-size:.84rem;font-weight:600;color:var(--ink-soft);flex:1}
+.mfoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px}
+.stars{font-size:1.05rem;letter-spacing:2px}
+.stars .on{color:var(--amber);text-shadow:0 1px 0 rgba(0,0,0,.15)}
+.stars .off{color:#C9CBE0}
+.mcard.locked{filter:saturate(.35);background:#F3EEDF}
+.mcard.locked .blob{background:#B9BDCB!important}
+.locknote{font-size:.74rem;font-weight:800;color:var(--ink-soft);display:flex;align-items:center;gap:6px}
+.mcard.done{border-color:var(--green)}
+.mcard.done .tape{background:linear-gradient(100deg,rgba(46,158,91,.7),rgba(46,158,91,.5))}
+@keyframes shakeX{0%,100%{transform:translateX(0) rotate(var(--rot,0deg))}20%,60%{transform:translateX(-7px) rotate(var(--rot,0deg))}40%,80%{transform:translateX(7px) rotate(var(--rot,0deg))}}
+.shake{animation:shakeX .45s}
+
+/* insegnante */
+.teacher{margin-top:48px;background:linear-gradient(120deg,rgba(46,158,91,.09),rgba(18,165,176,.08));border:2px solid var(--ink);border-radius:20px;box-shadow:var(--shadow);overflow:hidden}
+.teacher summary{cursor:pointer;list-style:none;padding:20px 24px;font-family:var(--fd);font-weight:600;font-size:1.15rem;display:flex;align-items:center;gap:12px;color:var(--ink-deep)}
+.teacher summary::-webkit-details-marker{display:none}
+.teacher summary .arr{transition:transform .25s;font-size:.9rem}
+.teacher[open] summary .arr{transform:rotate(90deg)}
+.teacher .tbody{padding:0 24px 24px;display:grid;grid-template-columns:1.1fr .9fr;gap:26px}
+.teacher h4{font-family:var(--fd);font-weight:600;margin:10px 0 6px;color:var(--red)}
+.teacher p,.teacher li{font-size:.9rem;font-weight:600;color:var(--ink)}
+.teacher ul{padding-left:20px;display:grid;gap:5px}
+footer.lab{margin-top:56px;text-align:center;font-family:var(--fh);font-size:1.3rem;color:var(--ink-soft)}
+footer.lab b{color:var(--red)}
+
+/* ============ VISTA MISSIONE ============ */
+.mbanner{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:8px 0 16px}
+.mbanner .blob{width:64px;height:64px;font-size:2rem}
+.mbanner h2{font-family:var(--fd);font-weight:700;font-size:clamp(1.4rem,3vw,2rem);color:var(--ink-deep);line-height:1.15}
+.objline{font-size:.85rem;font-weight:700;color:var(--ink-soft);width:100%}
+.objline b{color:var(--green)}
+.phasebar{position:sticky;top:var(--head-h);z-index:60;background:var(--paper2);border:2.5px solid var(--ink);border-radius:16px;box-shadow:var(--shadow);padding:10px 14px;display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.steps{display:flex;gap:6px;align-items:center}
+.step{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 7px;border-radius:12px;transition:background .2s;position:relative}
+.step .sic{width:38px;height:38px;border-radius:50%;border:2.5px solid var(--ink);background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:1.05rem;transition:transform .2s}
+.step small{font-size:.6rem;font-weight:900;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft)}
+.step.done .sic{background:var(--green);border-color:#1D6B3D;color:#fff}
+.step.cur .sic{background:var(--yellow);border-color:var(--ink-deep);transform:scale(1.12);animation:stepPulse 1.6s infinite}
+@keyframes stepPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,.45)}50%{box-shadow:0 0 0 8px rgba(245,158,11,0)}}
+.step.lock{opacity:.4;cursor:not-allowed}
+.step:not(.lock):hover{background:rgba(45,127,249,.09)}
+.slink{width:14px;border-top:3px dotted rgba(34,53,124,.4)}
+.pstat{margin-left:auto;font-size:.8rem;font-weight:800;color:var(--ink-soft);text-align:right}
+.paneljump{display:none}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:26px;align-items:start}
+.bench{font-size:calc(17px * var(--tscale));min-height:420px}
+@keyframes phaseIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+.phase-enter{animation:phaseIn .45s cubic-bezier(.2,.9,.3,1) both}
+.card{background:var(--paper2);border:2.5px solid var(--ink);border-radius:18px;padding:22px;box-shadow:var(--shadow);margin-bottom:22px}
+.card h3.ct{font-family:var(--fd);font-weight:600;font-size:1.25em;color:var(--ink-deep);display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.card .sub{font-size:.88em;font-weight:600;color:var(--ink-soft);margin-bottom:14px}
+
+/* pannello del ricercatore */
+.panel{position:sticky;top:calc(var(--head-h) + 84px);background:linear-gradient(160deg,var(--paper2),#FBF4E2);border:2.5px solid var(--ink-deep);border-radius:18px;box-shadow:var(--shadow);padding:18px 16px;display:flex;flex-direction:column;gap:14px}
+.panel h3{font-family:var(--fd);font-weight:600;font-size:1.02rem;color:var(--ink-deep);display:flex;gap:8px;align-items:center;border-bottom:2px dashed rgba(34,53,124,.3);padding-bottom:10px}
+.pgroup{display:flex;flex-direction:column;gap:7px}
+.pgroup>label,.pgroup>.plabel{font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-soft);display:flex;justify-content:space-between;align-items:center}
+.seg{display:flex;background:var(--paper3);border:2px solid var(--ink);border-radius:11px;padding:3px;gap:3px}
+.seg-btn{flex:1;font-family:var(--fd);font-weight:500;font-size:.78rem;padding:7px 4px;border-radius:8px;color:var(--ink-soft);transition:all .18s;white-space:nowrap}
+.seg-btn.on{background:var(--ink);color:var(--paper2);box-shadow:0 2px 0 var(--ink-deep)}
+.seg-btn:not(.on):hover{background:rgba(34,53,124,.1)}
+.swatches{display:flex;gap:8px}
+.sw{width:34px;height:34px;border-radius:10px;border:2.5px solid var(--ink);transition:transform .15s;position:relative}
+.sw:hover{transform:scale(1.12) rotate(-4deg)}
+.sw.on::after{content:"✓";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--ink-deep)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:26px;background:transparent}
+input[type=range]::-webkit-slider-runnable-track{height:9px;border-radius:6px;background:linear-gradient(90deg,var(--blue),var(--magenta));border:2px solid var(--ink)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:23px;height:23px;border-radius:50%;background:var(--yellow);border:3px solid var(--ink-deep);margin-top:-9px;box-shadow:0 2px 0 rgba(0,0,0,.25);cursor:grab}
+input[type=range]::-moz-range-track{height:9px;border-radius:6px;background:linear-gradient(90deg,var(--blue),var(--magenta));border:2px solid var(--ink)}
+input[type=range]::-moz-range-thumb{width:19px;height:19px;border-radius:50%;background:var(--yellow);border:3px solid var(--ink-deep);cursor:grab}
+.switch{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:.85rem;font-weight:800;color:var(--ink)}
+.switch input{position:absolute;opacity:0;width:0}
+.switch .track{width:46px;height:26px;border-radius:999px;background:var(--paper3);border:2.5px solid var(--ink);position:relative;transition:background .2s;flex:none}
+.switch .track::after{content:"";position:absolute;top:2px;left:2px;width:17px;height:17px;border-radius:50%;background:var(--paper2);border:2px solid var(--ink);transition:transform .2s}
+.switch input:checked+.track{background:var(--green)}
+.switch input:checked+.track::after{transform:translateX(19px)}
+.switch input:focus-visible+.track{outline:3px dashed var(--blue);outline-offset:2px}
+.pbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pbtn{font-family:var(--fd);font-weight:500;font-size:.8rem;padding:9px 6px;border-radius:11px;border:2px solid var(--ink);background:var(--paper2);box-shadow:0 3px 0 rgba(34,53,124,.3);transition:transform .12s;display:flex;align-items:center;justify-content:center;gap:6px}
+.pbtn:hover{transform:translateY(-2px);background:#FFF}
+.pbtn:active{transform:translateY(2px);box-shadow:none}
+.pbtn.wide{grid-column:1/-1}
+.pbtn.warnb{border-color:#9A6A06;background:linear-gradient(135deg,#FFF3D1,#FFE9AD)}
+
+/* osserva */
+.obsgrid{display:grid;grid-template-columns:1.35fr .85fr;gap:22px;align-items:start}
+.sent-card{background:var(--paper2);border:2px solid var(--ink);border-radius:14px;padding:16px 18px;margin-bottom:14px;box-shadow:0 4px 0 rgba(34,53,124,.12);transform:rotate(var(--rot,0deg));font-size:1.18em;line-height:2.1;font-weight:600}
+.token{display:inline;font-family:inherit;font-size:inherit;font-weight:inherit;padding:2px 3px;border-radius:7px;transition:background .15s;line-height:inherit}
+.token:hover{background:rgba(45,127,249,.12)}
+.token.mark{background:linear-gradient(100deg,transparent 2%,var(--hl-soft) 8% 92%,transparent 98%);border-bottom:2.5px solid var(--ink);cursor:pointer;font-weight:800;position:relative}
+.token.mark:hover{background:var(--hl);transform:translateY(-1px)}
+.token.mark.found{border-bottom-color:var(--green);background:linear-gradient(100deg,transparent 2%,rgba(46,158,91,.25) 8% 92%,transparent 98%)}
+.token.mark.found::after{content:"✓";font-size:.6em;color:var(--green);vertical-align:super;font-weight:900}
+.qnote{background:linear-gradient(140deg,#FFF6C9,#FFEE9E);border:2px solid #C9A227;border-radius:4px 16px 16px 16px;padding:16px 18px;box-shadow:var(--shadow);transform:rotate(1deg);margin-bottom:16px}
+.qnote b{font-family:var(--fd);font-weight:600;display:flex;gap:8px;align-items:center;margin-bottom:8px;color:var(--ink-deep)}
+.qnote li{font-size:.9em;font-weight:700;margin:6px 0 6px 18px;color:var(--ink)}
+.cluewrap{background:var(--paper2);border:2.5px solid var(--ink);border-radius:16px;padding:16px;box-shadow:var(--shadow);background-image:repeating-linear-gradient(transparent 0 30px,var(--rule-line) 30px 31px)}
+.cluewrap h4{font-family:var(--fd);font-weight:600;display:flex;justify-content:space-between;align-items:center;color:var(--ink-deep);margin-bottom:10px}
+.cluecount{font-size:.75rem;font-weight:900;background:var(--ink);color:var(--yellow);padding:3px 10px;border-radius:999px}
+.cluecard{font-family:var(--fh);font-size:1.32rem;line-height:1.3;background:rgba(255,255,255,.75);border-left:4px solid var(--magenta);border-radius:0 10px 10px 0;padding:8px 12px;margin-bottom:9px;color:var(--ink-deep)}
+.cluecard b{color:var(--red)}
+@keyframes clueIn{from{opacity:0;transform:translateX(-16px) rotate(-2deg)}to{opacity:1;transform:none}}
+.cluecard.new{animation:clueIn .5s cubic-bezier(.2,.9,.3,1.3)}
+.clueempty{font-family:var(--fh);font-size:1.3rem;color:#9aa4c8;text-align:center;padding:18px 6px}
+
+/* ipotesi */
+.hypcard{display:flex;gap:14px;align-items:flex-start;width:100%;text-align:left;background:var(--paper2);border:2.5px solid var(--ink);border-radius:16px;padding:16px 18px;margin-bottom:12px;box-shadow:0 4px 0 rgba(34,53,124,.14);transition:transform .15s,border-color .2s,background .2s;font-size:1em;font-weight:700;color:var(--ink)}
+.hypcard:hover{transform:translateY(-3px)}
+.hypcard .letter{flex:none;width:38px;height:38px;border-radius:50%;background:var(--paper3);border:2.5px solid var(--ink);display:flex;align-items:center;justify-content:center;font-family:var(--fd);font-weight:700}
+.hypcard.sel{border-color:var(--magenta);background:linear-gradient(120deg,#FFF,#FDEFF7);box-shadow:0 4px 0 var(--magenta)}
+.hypcard.sel .letter{background:var(--magenta);color:#fff;border-color:#A93A7E}
+.hypnote{font-family:var(--fh);font-size:1.4rem;color:var(--ink-soft);text-align:center;padding:6px;transform:rotate(-.6deg)}
+.hypnote b{color:var(--magenta)}
+
+/* banco di prova / sandbox */
+.sandbox{border-color:var(--ink-deep);background:linear-gradient(150deg,var(--paper2) 60%,#F2F6FF)}
+.sb-controls{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:12px 0}
+.sb-controls .seg{min-width:170px}
+.wordchips{display:flex;flex-wrap:wrap;gap:8px}
+.wchip{font-family:var(--fd);font-weight:500;font-size:.88em;padding:7px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--paper2);transition:all .15s;box-shadow:0 2px 0 rgba(34,53,124,.25)}
+.wchip:hover{transform:translateY(-2px)}
+.wchip.on{background:var(--ink);color:var(--paper2);box-shadow:0 2px 0 var(--ink-deep)}
+.lever{font-family:var(--fd);font-weight:600;font-size:1em;padding:12px 20px;border-radius:14px;background:linear-gradient(135deg,var(--blue),#1B5FD0);color:#fff;border:2.5px solid #123F8E;box-shadow:0 4px 0 #123F8E;transition:transform .12s,box-shadow .12s;display:inline-flex;gap:9px;align-items:center}
+.lever:hover{transform:translateY(-2px);box-shadow:0 6px 0 #123F8E}
+.lever:active{transform:translateY(3px);box-shadow:0 1px 0 #123F8E}
+.lever[disabled]{opacity:.45;cursor:not-allowed;transform:none!important}
+.lever.amberl{background:linear-gradient(135deg,var(--amber),#D97E06);border-color:#8E5406;box-shadow:0 4px 0 #8E5406}
+.lever.amberl:hover{box-shadow:0 6px 0 #8E5406}.lever.amberl:active{box-shadow:0 1px 0 #8E5406}
+.sb-display{background:var(--paper);border:2.5px dashed var(--ink-soft);border-radius:14px;padding:20px;min-height:96px;display:flex;flex-direction:column;gap:10px;justify-content:center;align-items:center;text-align:center;position:relative;overflow:hidden}
+.sb-cap{font-family:var(--fh);font-size:1.35rem;color:var(--ink-soft);margin-top:10px;text-align:center;min-height:1.6em}
+.sb-cap b{color:var(--red)}
+.phrase{font-family:var(--fd);font-weight:600;font-size:2em;color:var(--ink-deep);letter-spacing:.5px}
+.phrase .end{color:var(--red);background:var(--hl-soft);border-radius:6px;padding:0 3px;border-bottom:3px solid var(--red)}
+.phrase .artc{color:var(--blue)}
+@keyframes flipIn{from{opacity:0;transform:rotateX(70deg)}to{opacity:1;transform:none}}
+.flip{animation:flipIn .4s cubic-bezier(.2,.9,.3,1.2)}
+.formbadge{font-family:var(--fd);font-weight:600;font-size:.95em;background:var(--ink);color:var(--yellow);padding:5px 14px;border-radius:999px}
+.timechip{font-weight:900;font-size:.85em;padding:5px 14px;border-radius:999px;color:#fff;letter-spacing:.04em}
+.dialwrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center;width:100%}
+.dial{width:150px;flex:none}
+.needle{transition:transform .6s cubic-bezier(.3,1.4,.4,1)}
+.gear{display:inline-block;font-size:1.5rem}
+@keyframes gearspin{to{transform:rotate(180deg)}}
+.gear.spin{animation:gearspin .6s ease}
+.slidewrap{width:100%;max-width:430px}
+.ticklabels{display:flex;justify-content:space-between;font-size:.62rem;font-weight:900;text-transform:uppercase;color:var(--ink-soft);margin-top:2px}
+.testrow{display:flex;gap:10px;align-items:center;font-weight:800;font-size:1.05em;background:rgba(255,255,255,.7);border:2px solid var(--ink);border-radius:11px;padding:9px 14px;width:100%;max-width:420px;justify-content:center}
+.testrow.good{border-color:var(--green);color:#1D6B3D;background:#EAF7EF}
+.testrow.bad{border-color:var(--red);color:#A32020;background:#FDEDED}
+.testrow.meh{border-color:var(--amber);color:#8E5406;background:#FFF6E3}
+.lamp{font-family:var(--fd);font-weight:700;font-size:1.15em;padding:9px 22px;border-radius:999px;border:3px solid;letter-spacing:.05em}
+.lamp.yes{color:#1D6B3D;border-color:var(--green);background:#EAF7EF;box-shadow:0 0 18px rgba(46,158,91,.4)}
+.lamp.no{color:#A32020;border-color:var(--red);background:#FDEDED}
+.lamp .tag{font-size:.7em;font-weight:600;display:block;letter-spacing:0}
+.drop{color:var(--red);background:var(--hl-soft);border-radius:5px;padding:0 2px;font-weight:800;border-bottom:2.5px solid var(--red)}
+.lensline{font-family:var(--fd);font-weight:600;font-size:1.7em;color:var(--ink-deep)}
+.lensarrow{font-size:1.3em;color:var(--magenta);font-weight:900}
+.verdict{font-weight:900;font-size:.92em;padding:8px 16px;border-radius:11px;border:2.5px solid}
+.verdict.yes{color:#1D6B3D;border-color:var(--green);background:#EAF7EF}
+.verdict.no{color:#A32020;border-color:var(--red);background:#FDEDED}
+.tok-hl-obj{background:rgba(46,158,91,.3)!important;border-bottom:3px solid var(--green);border-radius:6px;font-weight:800}
+.tok-hl-ind{background:rgba(232,79,175,.28)!important;border-bottom:3px solid var(--magenta);border-radius:6px;font-weight:800}
+.tok-hl-subj{background:rgba(46,158,91,.3)!important;border-bottom:3px solid var(--green);border-radius:6px;font-weight:800}
+.tok-hl-verb{background:rgba(45,127,249,.25)!important;border-bottom:3px solid var(--blue);border-radius:6px;font-weight:800}
+.ghostchip{display:inline-block;font-family:var(--fd);font-weight:600;border:2.5px dashed var(--magenta);color:var(--magenta);border-radius:999px;padding:4px 14px;background:rgba(232,79,175,.07);font-size:.9em}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.75em;font-weight:800;color:var(--ink-soft);justify-content:center}
+.legend i{font-style:normal;display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:5px;vertical-align:-1px}
+
+/* prove / trial */
+.trialcard{border-color:var(--ink-deep)}
+.thead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.thead .tl{font-family:var(--fd);font-weight:600;font-size:.95em;color:var(--ink-deep)}
+.dots{display:flex;gap:5px;flex-wrap:wrap}
+.dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--ink);background:var(--paper3)}
+.dot.ok{background:var(--green);border-color:#1D6B3D}
+.dot.miss{background:var(--red);border-color:#8E1B1B}
+.dot.cur{background:var(--yellow);animation:stepPulse 1.4s infinite}
+.streak{font-weight:900;font-size:.85em;color:var(--amber);background:#FFF6E3;border:2px solid var(--amber);padding:3px 10px;border-radius:999px}
+.timerring{margin-left:auto;display:flex;align-items:center;gap:6px;font-weight:900;font-size:.9em}
+.timerring svg{width:34px;height:34px;transform:rotate(-90deg)}
+.timerring circle{fill:none;stroke-width:5}
+.timerring .tbg{stroke:var(--paper3)}
+.timerring .tfg{stroke:var(--green);stroke-linecap:round;transition:stroke-dashoffset .1s linear}
+.timerring.warn .tfg{stroke:var(--amber)}
+.timerring.danger .tfg{stroke:var(--red)}
+.timerring.danger{color:var(--red);animation:stepPulse .7s infinite}
+.prompt{font-weight:800;font-size:1.08em;margin-bottom:14px;color:var(--ink-deep)}
+.prompt .pq{color:var(--red)}
+.itemcard{font-family:var(--fd);font-weight:600;font-size:1.9em;text-align:center;background:var(--paper);border:2.5px solid var(--ink);border-radius:14px;padding:18px;margin-bottom:16px;color:var(--ink-deep)}
+.itemcard.sentence{font-size:1.3em;font-family:var(--fb);font-weight:700}
+.itemcard b{background:var(--hl-soft);border-bottom:3px solid var(--amber);border-radius:5px;padding:0 3px}
+.catrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.catbtn,.optbtn{font-family:var(--fd);font-weight:600;font-size:1em;padding:14px 16px;border-radius:14px;border:2.5px solid var(--ink);background:var(--paper2);box-shadow:0 4px 0 rgba(34,53,124,.3);transition:transform .13s,background .2s;text-align:center;color:var(--ink-deep)}
+.catbtn:hover:not([disabled]),.optbtn:hover:not([disabled]){transform:translateY(-3px);background:#FFF}
+.catbtn:active:not([disabled]),.optbtn:active:not([disabled]){transform:translateY(2px);box-shadow:none}
+.optlist{display:flex;flex-direction:column;gap:10px}
+.optbtn{text-align:left;display:flex;gap:12px;align-items:center}
+.optbtn .key{flex:none;width:28px;height:28px;border-radius:8px;background:var(--paper3);border:2px solid var(--ink);font-size:.75em;display:flex;align-items:center;justify-content:center;font-weight:700}
+.optbtn.good,.catbtn.good{background:#EAF7EF;border-color:var(--green);box-shadow:0 4px 0 #1D6B3D;color:#1D6B3D}
+.optbtn.bad,.catbtn.bad{background:#FDEDED;border-color:var(--red);box-shadow:0 4px 0 #8E1B1B;color:#A32020}
+.optbtn[disabled],.catbtn[disabled]{cursor:default;opacity:.85}
+.optbtn.good[disabled],.optbtn.bad[disabled]{opacity:1}
+.tokline{background:var(--paper);border:2.5px solid var(--ink);border-radius:14px;padding:16px 18px;font-size:1.25em;line-height:2.2;font-weight:600;margin-bottom:12px}
+.tokbtn{display:inline;font-size:inherit;font-weight:inherit;font-family:inherit;padding:3px 5px;border-radius:8px;border-bottom:2.5px dashed transparent;transition:all .15s;color:var(--ink-deep)}
+.tokbtn:hover:not([disabled]){background:rgba(45,127,249,.14);border-bottom-color:var(--blue)}
+.tokbtn.sel{background:var(--hl);border-bottom:2.5px solid var(--amber);font-weight:800}
+.tokbtn.good{background:rgba(46,158,91,.3);border-bottom:2.5px solid var(--green);font-weight:800}
+.tokbtn.bad{background:rgba(226,58,58,.22);border-bottom:2.5px solid var(--red);text-decoration:line-through}
+.chipghostbtn{font-family:var(--fd);font-weight:600;font-size:.85em;border:2.5px dashed var(--magenta);color:var(--magenta);border-radius:999px;padding:8px 16px;background:rgba(232,79,175,.06);transition:all .15s;margin-top:4px}
+.chipghostbtn:hover:not([disabled]){background:rgba(232,79,175,.16);transform:translateY(-2px)}
+.chipghostbtn.good{background:#EAF7EF;border-color:var(--green);color:#1D6B3D;border-style:solid}
+.chipghostbtn.bad{background:#FDEDED;border-color:var(--red);color:#A32020}
+.verifybtn{margin-top:2px}
+.feedback{border-radius:13px;padding:13px 16px;font-weight:700;font-size:.95em;margin-top:14px;display:none;border:2.5px solid}
+.feedback.show{display:block;animation:clueIn .35s}
+.feedback.good{background:#EAF7EF;border-color:var(--green);color:#1D6B3D}
+.feedback.bad{background:#FDEDED;border-color:var(--red);color:#A32020}
+.feedback.hint{background:#FFF6E3;border-color:var(--amber);color:#8E5406}
+.feedback .why{display:block;margin-top:4px;font-weight:600}
+.avantirow{display:flex;justify-content:flex-end;margin-top:14px}
+.hintline{font-size:.85em;font-weight:700;color:#8E5406;background:#FFF6E3;border:2px dashed var(--amber);border-radius:10px;padding:8px 12px;margin-bottom:12px}
+.sumcard{text-align:center;padding:26px 18px}
+.sumcard .big{font-family:var(--fd);font-weight:700;font-size:1.6em;color:var(--ink-deep)}
+.sumcard .score{font-family:var(--fd);font-weight:600;font-size:1.15em;color:var(--green);margin:8px 0}
+
+/* regola */
+.hypverdict{display:flex;gap:12px;align-items:flex-start;border-radius:14px;padding:14px 16px;border:2.5px solid;margin-bottom:18px;font-weight:700;font-size:.92em}
+.hypverdict.conf{background:#EAF7EF;border-color:var(--green);color:#1D6B3D}
+.hypverdict.rev{background:#FFF6E3;border-color:var(--amber);color:#8E5406}
+.ruletext{font-size:1.22em;font-weight:700;line-height:2.4;color:var(--ink-deep)}
+.slot{display:inline-flex;align-items:center;justify-content:center;min-width:5ch;border-bottom:3px dashed var(--magenta);background:rgba(232,79,175,.07);border-radius:8px 8px 0 0;padding:1px 10px;margin:0 3px;font-family:var(--fd);font-weight:600;color:var(--magenta);transition:all .2s;vertical-align:baseline;font-size:.95em}
+.slot.filled{border-bottom-style:solid;background:rgba(232,79,175,.14)}
+.slot.locked{border-color:var(--green);background:rgba(46,158,91,.15);color:#1D6B3D;cursor:default}
+.slot.err{animation:shakeX .4s;border-color:var(--red);color:var(--red)}
+.bank{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0;padding:14px;background:var(--paper);border:2px dashed var(--ink-soft);border-radius:13px}
+.bank .blabel{width:100%;font-size:.7em;font-weight:900;text-transform:uppercase;letter-spacing:.1em;color:var(--ink-soft)}
+.bchip{font-family:var(--fd);font-weight:600;font-size:.95em;padding:8px 16px;border-radius:999px;border:2.5px solid var(--ink);background:var(--paper2);box-shadow:0 3px 0 rgba(34,53,124,.3);transition:all .15s}
+.bchip:hover:not(.used){transform:translateY(-2px);background:var(--hl-soft)}
+.bchip.used{opacity:.3;cursor:default;text-decoration:line-through;box-shadow:none}
+.rulestamp{display:none;font-family:var(--fd);font-weight:700;font-size:1.3em;color:var(--green);border:4px double var(--green);border-radius:12px;padding:10px 22px;transform:rotate(-4deg);letter-spacing:.08em;margin:18px auto 4px;width:fit-content;text-align:center}
+@keyframes stampIn{0%{opacity:0;transform:rotate(-14deg) scale(2.4)}60%{opacity:1;transform:rotate(-4deg) scale(.94)}100%{transform:rotate(-4deg) scale(1)}}
+.rulestamp.show{display:block;animation:stampIn .5s cubic-bezier(.2,1.4,.4,1) both}
+.rulefull{font-size:1.05em;font-weight:700;background:#EAF7EF;border:2px solid var(--green);border-radius:12px;padding:14px 16px;color:#1D6B3D;margin-top:14px}
+
+/* risultati */
+.results{text-align:center;padding:34px 22px;position:relative;overflow:hidden}
+.stamp{font-family:var(--fd);font-weight:700;font-size:clamp(1.5rem,4vw,2.3rem);color:var(--red);border:5px double var(--red);border-radius:16px;padding:14px 30px;transform:rotate(-6deg);letter-spacing:.06em;width:fit-content;margin:6px auto 20px;animation:stampIn .55s cubic-bezier(.2,1.4,.4,1) both;background:rgba(255,255,255,.6)}
+.bigstars{display:flex;justify-content:center;gap:14px;font-size:3rem;margin:8px 0 14px}
+.bstar{color:#D8DAE8;transition:color .2s;transform:scale(.6);opacity:.5}
+@keyframes starPop{0%{transform:scale(.3) rotate(-30deg);opacity:0}60%{transform:scale(1.35) rotate(8deg);opacity:1}100%{transform:scale(1) rotate(0)}}
+.bstar.on{color:var(--amber);text-shadow:0 3px 0 rgba(154,106,6,.4);animation:starPop .5s cubic-bezier(.2,1.4,.4,1) both;opacity:1;transform:scale(1)}
+.scoreline{font-weight:800;font-size:1.02em;color:var(--ink-soft);margin-bottom:6px}
+.scoreline b{color:var(--green)}
+.resmsg{font-family:var(--fh);font-size:1.6rem;color:var(--magenta);margin:8px 0 20px}
+.resbtns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+/* quaderno */
+.nbhead{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+.nbhead h2{font-family:var(--fd);font-weight:700;font-size:clamp(1.6rem,3vw,2.2rem);color:var(--ink-deep)}
+.nbactions{margin-left:auto;display:flex;gap:10px;flex-wrap:wrap}
+.rulelist{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.nbcard{position:relative;background:var(--paper2);border:2.5px solid var(--ink);border-radius:6px 18px 18px 6px;padding:22px 20px 16px;box-shadow:var(--shadow);transform:rotate(var(--rot,0deg));background-image:repeating-linear-gradient(transparent 0 30px,var(--rule-line) 30px 31px)}
+.nbcard::before{content:"";position:absolute;top:0;bottom:0;left:14px;width:2px;background:var(--margin-line)}
+.nbcard .nbtop{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding-left:12px}
+.nbcard .nbtop .em{font-size:1.6rem}
+.nbcard .nbtop b{font-family:var(--fd);font-weight:600;font-size:1.05rem;color:var(--ink-deep)}
+.nbcard .nbtop small{display:block;font-size:.68rem;font-weight:800;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+.nbcard p{font-family:var(--fh);font-size:1.45rem;line-height:1.35;color:var(--ink-deep);padding-left:12px}
+.nbcard .nbfoot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding-left:12px;font-size:.72rem;font-weight:800;color:var(--ink-soft)}
+.nbempty{text-align:center;padding:60px 20px;border:3px dashed var(--ink-soft);border-radius:20px;background:rgba(255,255,255,.4)}
+.nbempty .em{font-size:3.4rem;margin-bottom:12px}
+.nbempty p{font-family:var(--fh);font-size:1.7rem;color:var(--ink-soft);margin-bottom:20px}
+
+/* toast + fx */
+#fx{position:fixed;inset:0;z-index:110;pointer-events:none}
+.toast{position:fixed;bottom:26px;left:50%;transform:translate(-50%,80px);z-index:120;background:var(--ink-deep);color:var(--paper2);font-weight:800;font-size:.92rem;padding:13px 22px;border-radius:14px;border:2.5px solid var(--yellow);box-shadow:0 8px 24px rgba(22,34,79,.4);transition:transform .35s cubic-bezier(.2,1.2,.4,1);max-width:min(92vw,480px);text-align:center}
+.toast.show{transform:translate(-50%,0)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* reveal on scroll */
+[data-rev]{opacity:0;transform:translateY(30px);transition:opacity .7s,transform .7s cubic-bezier(.2,.9,.3,1)}
+[data-rev].in{opacity:1;transform:none}
+
+/* ============ RESPONSIVE ============ */
+@media(max-width:1100px){
+  .layout{grid-template-columns:1fr}
+  .panel{position:static;display:grid;grid-template-columns:1fr 1fr;gap:14px 20px}
+  .panel h3{grid-column:1/-1}
+  .pbtns{grid-column:1/-1;grid-template-columns:repeat(4,1fr)}
+  .pbtn.wide{grid-column:auto}
+  .paneljump{display:inline-flex}
+  .cases{grid-template-columns:1fr 1fr}
+}
+@media(max-width:860px){
+  .hero{grid-template-columns:1fr;gap:10px}
+  .mascotzone{order:-1;padding-bottom:34px}
+  .mascot{width:170px}
+  .bubble{max-width:200px;font-size:1.1rem;right:0}
+  .obsgrid{grid-template-columns:1fr}
+  .teacher .tbody{grid-template-columns:1fr}
+  .msteps{grid-template-columns:repeat(5,minmax(86px,1fr));overflow-x:auto;padding-bottom:8px}
+  .msteps::before{display:none}
+  .rulelist{grid-template-columns:1fr}
+  .namechip{display:none}
+  .nlink span.nl{display:none}
+  .brand b{font-size:.95rem}
+  body::before{left:26px}
+  .pstat{display:none}
+}
+@media(max-width:600px){
+  section.view{padding:6px 14px 80px}
+  .cases{grid-template-columns:1fr}
+  .phasebar{flex-wrap:wrap;gap:8px;padding:8px}
+  .steps{width:100%;justify-content:space-between}
+  .step small{display:none}
+  .slink{width:8px}
+  .continue{flex:1}
+  .catrow{grid-template-columns:1fr}
+  .panel{grid-template-columns:1fr}
+  .pbtns{grid-template-columns:1fr 1fr}
+  .brand small{display:none}
+  .starcount{padding:4px 9px;font-size:.8rem}
+  .iconbtn{width:36px;height:36px}
+  .doodle{display:none}
+  .itemcard{font-size:1.5em}
+  .phrase{font-size:1.5em}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important;scroll-behavior:auto!important}
+}
+/* stampa quaderno */
+@media print{
+  body{background:#fff}
+  body::before,body::after,header.tb,#fx,.toast,.nbactions,.doodle{display:none!important}
+  main{padding-top:0}
+  #view-home,#view-mission{display:none!important}
+  #view-notebook{display:block!important}
+  .nbcard{box-shadow:none;break-inside:avoid;transform:none}
+  .rulelist{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="tb">
+  <a class="brand" href="#" id="brandlink" aria-label="Torna all'inizio">
+    <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="20" cy="20" r="13" fill="#BFE0FF" stroke="#FFD449" stroke-width="4"/><circle cx="16" cy="18" r="2.2" fill="#16224F"/><circle cx="24" cy="18" r="2.2" fill="#16224F"/><path d="M15 24 Q20 28 25 24" stroke="#16224F" stroke-width="2.4" fill="none" stroke-linecap="round"/><rect x="29" y="29" width="14" height="6.5" rx="3.2" transform="rotate(45 29 29)" fill="#E23A3A" stroke="#16224F" stroke-width="1.6"/></svg>
+    <span><b>Il Laboratorio delle Parole</b><small>Grammatica · Inquiry · Classe 5ª</small></span>
+  </a>
+  <nav class="mainnav" aria-label="Navigazione principale">
+    <a class="nlink" href="#casi" id="nav-mappa">🗺️ <span class="nl">Mappa dei casi</span></a>
+    <a class="nlink" href="#" id="nav-quaderno">📓 <span class="nl">Quaderno</span> <span class="badge" id="nbbadge" hidden>0</span></a>
+    <a class="nlink" href="#metodo" id="nav-metodo">🧭 <span class="nl">Il metodo</span></a>
+  </nav>
+  <div class="hright">
+    <span class="namechip" id="namechip"></span>
+    <span class="starcount" title="Stelle conquistate">⭐ <b id="starsum">0</b>/18</span>
+    <button class="iconbtn" id="soundbtn" aria-pressed="true" title="Attiva/disattiva tutti i suoni">🔊</button>
+  </div>
+  <div class="spiral" id="spiral" aria-hidden="true"></div>
+</header>
+
+<main>
+<!-- ================= HOME ================= -->
+<section class="view" id="view-home">
+  <div class="hero">
+    <span class="doodle" style="top:6%;left:44%;animation-delay:.3s" data-px="0.06">✏️</span>
+    <span class="doodle" style="top:70%;left:2%;animation-delay:1.2s" data-px="0.1">📎</span>
+    <span class="doodle" style="top:16%;left:1%;animation-delay:2s;font-size:1.3rem" data-px="0.04">⭐</span>
+    <span class="doodle" style="top:82%;left:48%;animation-delay:.7s" data-px="0.12">✂️</span>
+    <span class="doodle" style="top:40%;right:2%;animation-delay:1.6s" data-px="0.08">📐</span>
+    <div>
+      <div class="eyebrow rise" style="animation-delay:.05s">Grammatica italiana · Metodo Inquiry · Scuola primaria</div>
+      <h1 class="big rise" style="animation-delay:.15s">Diventa investigatore<br><span class="hl-mark">delle parole</span> 🔍</h1>
+      <p class="lead rise" style="animation-delay:.28s">Sei casi misteriosi ti aspettano. Niente regole da imparare a memoria: qui le regole <b>le scopri tu</b>, come una vera scienziata o un vero scienziato. Osserva gli indizi, fai la tua ipotesi, sperimenta sul banco di prova… e risolvi il caso!</p>
+      <div class="nameform rise" style="animation-delay:.4s">
+        <label for="agentname">Il tuo nome in codice:</label>
+        <input id="agentname" maxlength="24" placeholder="es. Falco Blu" autocomplete="off">
+        <button class="btn primary" id="startbtn">Inizia a indagare →</button>
+      </div>
+      <div class="herostats rise" style="animation-delay:.5s">
+        <div class="mini-stat">
+          <svg class="ring" viewBox="0 0 60 60" aria-hidden="true"><circle class="bg" cx="30" cy="30" r="24"/><circle class="fg" id="ringfg" cx="30" cy="30" r="24" stroke-dasharray="150.8" stroke-dashoffset="150.8"/></svg>
+          <div><div class="num" id="casesdone">0/6</div><small>casi risolti</small></div>
+        </div>
+        <div class="mini-stat"><div><div class="num" id="starsum2">0 ⭐</div><small>stelle su 18</small></div></div>
+      </div>
+      <div class="rankline rise" style="animation-delay:.6s">Grado attuale: <b id="ranktxt">Apprendista delle Parole</b></div>
+    </div>
+    <div class="mascotzone rise" style="animation-delay:.35s">
+      <svg class="mascot" viewBox="0 0 140 150" aria-hidden="true">
+        <ellipse cx="70" cy="140" rx="34" ry="6" fill="rgba(34,53,124,.15)"/>
+        <rect x="92" y="92" width="42" height="15" rx="7.5" transform="rotate(45 92 92)" fill="#E23A3A" stroke="#16224F" stroke-width="3"/>
+        <circle cx="62" cy="62" r="44" fill="#BFE0FF" stroke="#22357C" stroke-width="7"/>
+        <circle cx="62" cy="62" r="44" fill="none" stroke="#FFD449" stroke-width="2.5" stroke-dasharray="5 9"/>
+        <path d="M32 42 Q42 26 60 24" stroke="#FFF" stroke-width="6" fill="none" stroke-linecap="round" opacity=".8"/>
+        <circle cx="50" cy="58" r="5" fill="#16224F"/><circle cx="76" cy="58" r="5" fill="#16224F"/>
+        <circle cx="52" cy="56" r="1.7" fill="#FFF"/><circle cx="78" cy="56" r="1.7" fill="#FFF"/>
+        <path d="M48 74 Q63 86 78 74" stroke="#16224F" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+        <circle cx="40" cy="70" r="4.5" fill="#E84FAF" opacity=".45"/><circle cx="86" cy="70" r="4.5" fill="#E84FAF" opacity=".45"/>
+        <text x="104" y="26" font-size="17">✨</text><text x="12" y="20" font-size="13">✨</text>
+      </svg>
+      <div class="bubble" id="bubble">Ciao! Sono <b>Lumino</b>, la lente investigativa. Clicca le parole evidenziate per raccogliere indizi!</div>
+    </div>
+  </div>
+
+  <div id="metodo" data-rev>
+    <div class="section-head"><h2>🧭 Il metodo Inquiry in 5 mosse</h2><span class="hand">← così lavorano i veri scienziati!</span></div>
+    <div class="methodband">
+      <div class="msteps">
+        <div class="mstep"><span class="n">1</span><div class="ic">🔍</div><b>Osserva</b><span>Raccogli gli indizi nelle frasi</span></div>
+        <div class="mstep"><span class="n">2</span><div class="ic">💭</div><b>Ipotizza</b><span>Prova a spiegare la regola</span></div>
+        <div class="mstep"><span class="n">3</span><div class="ic">🧪</div><b>Sperimenta</b><span>Manipola e verifica sul banco</span></div>
+        <div class="mstep"><span class="n">4</span><div class="ic">📜</div><b>Concludi</b><span>Scrivi la regola scoperta</span></div>
+        <div class="mstep"><span class="n">5</span><div class="ic">🚀</div><b>Applica</b><span>Risolvi il caso con frasi nuove</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="casi" data-rev>
+    <div class="section-head"><h2>🗺️ La mappa dei casi</h2><span class="hand">risolvili in ordine per sbloccare i prossimi!</span></div>
+    <div class="cases" id="casegrid"></div>
+  </div>
+
+  <details class="teacher" data-rev>
+    <summary><span class="arr">▶</span> 👩‍🏫 Per l'insegnante — impianto didattico e obiettivi</summary>
+    <div class="tbody">
+      <div>
+        <h4>Perché il metodo inquiry</h4>
+        <p>Il simulatore segue il ciclo di indagine in 5 fasi (Osserva → Ipotizza → Sperimenta → Concludi → Applica). La regola non viene mai anticipata: gli alunni raccolgono evidenze, formulano ipotesi (anche sbagliate: vengono registrate, non giudicate) e le mettono alla prova su banchi di prova manipolabili. La formalizzazione avviene <em>dopo</em> l'esperimento, con la regola da completare a cloze, e viene salvata nel Quaderno delle Scoperte.</p>
+        <h4>Consigli d'uso in classe</h4>
+        <ul>
+          <li>Alla LIM: proiettate la fase «Osserva» e discutete gli indizi prima di votare l'ipotesi.</li>
+          <li>A coppie: un alunno manipola il banco di prova, l'altro registra le osservazioni sul quaderno reale.</li>
+          <li>Il pannello a destra regola aiuti, evidenziatore, dimensione del testo, font ad alta leggibilità e sfida a tempo: utile per BES/DSA e per differenziare.</li>
+          <li>Il Quaderno delle Scoperte si può stampare o scaricare come verifica condivisa.</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Obiettivi per caso (Indicazioni Nazionali, traguardi classe 5ª)</h4>
+        <ul id="objlist"></ul>
+        <h4>Gestione della classe</h4>
+        <p style="margin-bottom:10px">I progressi restano su questo dispositivo. Per ricominciare con una nuova classe o un nuovo alunno:</p>
+        <button class="btn small ghost" id="resetbtn">🗑️ Azzera tutti i progressi</button>
+      </div>
+    </div>
+  </details>
+
+  <footer class="lab" data-rev>Fatto con <b>♥</b> e tante parole — Il Laboratorio delle Parole · quaderno n. 5</footer>
+</section>
+
+<!-- ================= MISSIONE ================= -->
+<section class="view" id="view-mission" hidden>
+  <div class="mbanner" id="mbanner"></div>
+  <div class="phasebar" id="phasebar">
+    <div class="steps" id="steps"></div>
+    <span class="pstat" id="pstat"></span>
+    <button class="btn small ghost paneljump" id="paneljump" title="Vai al pannello del ricercatore">🎛️</button>
+    <button class="btn primary small continue" id="continuebtn" disabled>Continua →</button>
+  </div>
+  <div class="layout">
+    <div class="bench" id="bench"></div>
+    <aside class="panel" id="panel" aria-label="Pannello del ricercatore">
+      <h3>🎛️ Pannello del ricercatore</h3>
+      <div class="pgroup">
+        <span class="plabel">Livello di aiuto</span>
+        <div class="seg" id="seg-help" role="group" aria-label="Livello di aiuto">
+          <button class="seg-btn" data-v="guidato">🤝 Guidato</button>
+          <button class="seg-btn" data-v="esploratore">🧭 Esploratore</button>
+          <button class="seg-btn" data-v="sfida">⚡ Sfida</button>
+        </div>
+      </div>
+      <div class="pgroup">
+        <span class="plabel">Evidenziatore</span>
+        <div class="swatches" id="swatches">
+          <button class="sw" data-c="#FFD449" style="background:#FFD449" aria-label="Evidenziatore giallo"></button>
+          <button class="sw" data-c="#7FE3A8" style="background:#7FE3A8" aria-label="Evidenziatore verde"></button>
+          <button class="sw" data-c="#FFB3DE" style="background:#FFB3DE" aria-label="Evidenziatore rosa"></button>
+          <button class="sw" data-c="#9CCBFF" style="background:#9CCBFF" aria-label="Evidenziatore azzurro"></button>
+        </div>
+      </div>
+      <div class="pgroup">
+        <label for="sizeslider">Dimensione testo <span id="sizeval">100%</span></label>
+        <input type="range" id="sizeslider" min="85" max="135" step="5" value="100" aria-label="Dimensione del testo">
+      </div>
+      <div class="pgroup">
+        <label class="switch"><input type="checkbox" id="hilegchk"><span class="track"></span>Alta leggibilità</label>
+        <label class="switch"><input type="checkbox" id="timerchk"><span class="track"></span>Sfida a tempo (20s)</label>
+        <label class="switch"><input type="checkbox" id="soundchk" checked><span class="track"></span>Suoni del laboratorio</label>
+      </div>
+      <div class="pbtns">
+        <button class="pbtn" id="hintbtn">💡 Suggerimento</button>
+        <button class="pbtn" id="shufflebtn">🔀 Rimescola</button>
+        <button class="pbtn" id="restartbtn">↺ Ricomincia fase</button>
+        <button class="pbtn" id="exportbtn2">📥 Esporta</button>
+        <button class="pbtn wide warnb" id="backmapbtn">🗺️ Torna alla mappa dei casi</button>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ================= QUADERNO ================= -->
+<section class="view" id="view-notebook" hidden>
+  <div class="nbhead">
+    <h2>📓 Il Quaderno delle Scoperte</h2>
+    <span class="hand" style="font-family:var(--fh);font-size:1.4rem;color:var(--red);transform:rotate(-1.5deg)">le regole che hai scoperto tu!</span>
+    <div class="nbactions">
+      <button class="btn small sunny" id="dlbtn">📥 Scarica .txt</button>
+      <button class="btn small" id="printbtn">🖨️ Stampa</button>
+    </div>
+  </div>
+  <div id="nbbody"></div>
+</section>
+</main>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<noscript><p style="padding:100px 30px;text-align:center;font-weight:800">Il Laboratorio delle Parole ha bisogno di JavaScript attivo per funzionare. 🙏</p></noscript>
+
+<script>
+"use strict";
+/* ============================================================
+   IL LABORATORIO DELLE PAROLE — simulatore di grammatica inquiry
+   ============================================================ */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const shuffle=a=>{const r=[...a];for(let i=r.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[r[i],r[j]]=[r[j],r[i]]}return r};
+const RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const PHASES=[{ic:"🔍",n:"Osserva"},{ic:"💭",n:"Ipotizza"},{ic:"🧪",n:"Sperimenta"},{ic:"📜",n:"Concludi"},{ic:"🚀",n:"Applica"}];
+const CONT_LABEL=["Fai la tua ipotesi →","Al laboratorio! →","Scopri la regola →","Applica e risolvi →","Chiudi il caso 🎉"];
+
+/* ================= DATI DEI 6 CASI ================= */
+const MISSIONS=[
+{
+ id:"nomi",n:1,title:"Il caso delle parole-nome",emoji:"🏷️",hex:"#2D7FF9",diff:1,skill:"Analisi grammaticale",
+ obj:"Riconoscere i nomi di persona, animale e cosa; distinguere nomi comuni e propri.",
+ obs:{intro:"Qualcuno ha rubato le etichette dal museo delle parole! Osserva le frasi e clicca le parole evidenziate per raccogliere gli indizi.",
+  questions:["Che cosa hanno in comune le parole evidenziate?","Quali indicano persone? Quali animali o cose?","Perché alcune iniziano con la lettera maiuscola?"],
+  sentences:[
+   {tokens:[{t:"La"},{t:"maestra",clue:"Indica una PERSONA. Prova: «la maestra, le maestre»… funziona!"},{t:"racconta"},{t:"una"},{t:"storia",clue:"Indica una COSA che si può pensare e raccontare: «una storia, due storie»."},{t:"alla"},{t:"classe."}]},
+   {tokens:[{t:"Rex",clue:"È il nome SPECIALE di un cane, e inizia con la MAIUSCOLA anche in mezzo alla frase!"},{t:"corre"},{t:"nel"},{t:"parco",clue:"Indica un LUOGO, una cosa dove puoi andare: «il parco, i parchi»."},{t:"con"},{t:"Livia.",clue:"Il nome speciale di una bambina: MAIUSCOLO! Non è una parola qualunque."}]}
+  ]},
+ hyp:{q:"Secondo te, che cosa deve fare una parola per essere un NOME?",
+  opts:[{t:"Deve essere lunga più di tre lettere.",ok:false},
+        {t:"Indica persone, animali o cose, e posso metterci davanti un articolo (il, la, un…).",ok:true},
+        {t:"Deve trovarsi all'inizio della frase.",ok:false}]},
+ exp:{kind:"tester",title:"Il Rivelatore di Nomi",intro:"Scegli una parola, aziona i due test e osserva che cosa succede. Poi metti alla prova la tua ipotesi!",
+  sandbox:{words:[
+   {w:"gatto",a:"il gatto ✓",ao:1,p:"i gatti ✓",po:1,noun:1,tag:"nome comune · animale"},
+   {w:"correre",a:"«il correre»? ✗",ao:0,p:"✗ non si può!",po:0,noun:0,tag:"è un'azione → VERBO"},
+   {w:"libro",a:"il libro ✓",ao:1,p:"i libri ✓",po:1,noun:1,tag:"nome comune · cosa"},
+   {w:"gentile",a:"«il gentile»? ✗",ao:0,p:"✗ non si può!",po:0,noun:0,tag:"è una qualità → AGGETTIVO"},
+   {w:"felicità",a:"la felicità ✓",ao:1,p:"…non si conta!",po:2,noun:1,tag:"nome comune · emozione (non si tocca, ma esiste!)"},
+   {w:"Roma",a:"…è un nome proprio!",ao:2,p:"…è unica!",po:2,noun:1,tag:"nome PROPRIO · città, con la maiuscola"},
+   {w:"saltare",a:"«il saltare»? ✗",ao:0,p:"✗ non si può!",po:0,noun:0,tag:"è un'azione → VERBO"},
+   {w:"tavolo",a:"il tavolo ✓",ao:1,p:"i tavoli ✓",po:1,noun:1,tag:"nome comune · cosa"}]},
+  trials:[
+   {type:"sort",item:"nuvola",cats:["🏷️ È un NOME","🚫 NON è un nome"],ok:0,why:"È una cosa: «la nuvola, le nuvole» ✓",hint:"Prova l'articolo: LA nuvola…"},
+   {type:"sort",item:"bambino",cats:["🏷️ È un NOME","🚫 NON è un nome"],ok:0,why:"È una persona: «il bambino, i bambini» ✓",hint:"Indica una persona, un animale o una cosa?"},
+   {type:"sort",item:"scrivere",cats:["🏷️ È un NOME","🚫 NON è un nome"],ok:1,why:"È un'azione: «io scrivo, tu scrivi». È un verbo!",hint:"Puoi dire «lo scrivere»? Meglio: è qualcosa che FAI."},
+   {type:"sort",item:"sedia",cats:["🏷️ È un NOME","🚫 NON è un nome"],ok:0,why:"È una cosa: «la sedia, le sedie» ✓",hint:"Prova il plurale: due… sedie!"},
+   {type:"sort",item:"allegro",cats:["🏷️ È un NOME","🚫 NON è un nome"],ok:1,why:"Descrive com'è qualcuno: è una qualità → aggettivo.",hint:"«Un bambino allegro»: allegro dice COM'È il bambino."},
+   {type:"sort",item:"aquila",cats:["🏷️ È un NOME","🚫 NON è un nome"],ok:0,why:"È un animale: «l'aquila, le aquile» ✓",hint:"È un animale che vola…"},
+   {type:"sort",item:"veloce",cats:["🏷️ È un NOME","🚫 NON è un nome"],ok:1,why:"È una qualità: dice com'è qualcuno o qualcosa → aggettivo.",hint:"«Una lepre veloce»: veloce descrive la lepre."},
+   {type:"sort",item:"nonno",cats:["🏷️ È un NOME","🚫 NON è un nome"],ok:0,why:"È una persona: «il nonno, i nonni» ✓",hint:"Prova l'articolo: IL nonno ✓"}]},
+ rule:{parts:["Il nome indica ",{b:"persone"},", ",{b:"animali"}," o cose. I nomi ",{b:"propri"}," vogliono la lettera ",{b:"maiuscola"},", come Roma e Rex."],
+  bank:["persone","animali","propri","maiuscola","azioni","comuni"],
+  full:"Il nome indica persone, animali o cose (anche emozioni, come «felicità»). I nomi comuni sono generali (gatto, maestra); i nomi propri indicano qualcuno di speciale e vogliono la maiuscola (Rex, Roma)."},
+ apply:{intro:"Ultima prova, investigatore: usa la regola scoperta su frasi MAI viste prima!",trials:[
+  {type:"tokens",multi:true,prompt:"Tocca TUTTI i nomi (anche quelli propri!), poi premi Verifica.",tokens:["Il","cane","Bruno","dorme","nella","cuccia."],ok:[1,2,5],why:"Cane (animale), Bruno (nome proprio), cuccia (cosa). «Nella» contiene un articolo, ma non è un nome!",hint:"Cerca persone, animali e cose: ce ne sono 3."},
+  {type:"pick",prompt:"Quale parola è un nome PROPRIO?",opts:["fiume","Po","corre"],ok:1,why:"Po è il nome speciale di quel fiume: si scrive con la maiuscola!",hint:"Cerca la maiuscola…"},
+  {type:"tokens",multi:true,prompt:"Tocca TUTTI i nomi della frase.",tokens:["Livia","disegna","una","stella","sul","quaderno."],ok:[0,3,5],why:"Livia (persona, proprio), stella e quaderno (cose). «Una» è un articolo: accompagna il nome.",hint:"Una persona e due cose: 3 nomi in tutto."},
+  {type:"pick",prompt:"«Felicità» è un nome?",opts:["Sì: è il nome di un'emozione","No: è un'azione","No: è una qualità"],ok:0,why:"I nomi possono indicare anche cose che non si toccano: emozioni, idee. LA felicità ✓",hint:"Prova l'articolo: LA felicità… funziona?"},
+  {type:"tokens",multi:true,prompt:"Tocca TUTTI i nomi della frase.",tokens:["La","nonna","prepara","una","torta","per","Marco."],ok:[1,4,6],why:"Nonna (persona), torta (cosa), Marco (nome proprio di persona).",hint:"Due persone (una con la maiuscola) e una cosa golosa…"}]}
+},
+{
+ id:"accordi",n:2,title:"Il mistero degli accordi segreti",emoji:"🤝",hex:"#2E9E5B",diff:1,skill:"Concordanza nome–aggettivo",
+ obj:"Scoprire che l'aggettivo concorda con il nome in genere e numero.",
+ obs:{intro:"Quattro frasi quasi gemelle… eppure qualcosa cambia! Clicca le parole evidenziate e confronta i finali.",
+  questions:["Quali lettere cambiano alla fine di «gatto» e «nero»?","Che cosa succede quando da uno diventano tanti?","Chi decide come finisce l'aggettivo?"],
+  sentences:[
+   {tokens:[{t:"Il"},{t:"gatto"},{t:"nero",clue:"Il gatto è MASCHIO e uno SOLO: «nero» finisce in -O."},{t:"dorme."}]},
+   {tokens:[{t:"La"},{t:"gatta"},{t:"nera",clue:"La gatta è FEMMINA e una SOLA: «nero» è diventato «nerA». Chi l'ha fatto cambiare?"},{t:"dorme."}]},
+   {tokens:[{t:"I"},{t:"gatti"},{t:"neri",clue:"Tanti gatti MASCHI: «nero» diventa «nerI», con la -I!"},{t:"dormono."}]},
+   {tokens:[{t:"Le"},{t:"gatte"},{t:"nere",clue:"Tante gatte FEMMINE: «nera» diventa «nerE», con la -E! Sembra che l'aggettivo COPI il nome…"},{t:"dormono."}]}
+  ]},
+ hyp:{q:"Chi comanda il finale dell'aggettivo?",
+  opts:[{t:"Il nome: l'aggettivo cambia genere (maschile/femminile) e numero (singolare/plurale) come il nome.",ok:true},
+        {t:"Il verbo della frase.",ok:false},
+        {t:"Nessuno: l'aggettivo finisce sempre in -o e non cambia mai.",ok:false}]},
+ exp:{kind:"transform",title:"La Fabbrica degli Accordi",intro:"Aziona le leve del GENERE e del NUMERO: la macchina trasforma la frase. Osserva i finali… poi prevedi il risultato nelle prove!",
+  sandbox:{pairs:[
+   {label:"gatto · nero",m:"gatto",f:"gatta",adj:["nero","nera","neri","nere"],art:["Il","La","I","Le"]},
+   {label:"bambino · alto",m:"bambino",f:"bambina",adj:["alto","alta","alti","alte"],art:["Il","La","I","Le"]},
+   {label:"lupo · grigio",m:"lupo",f:"lupa",adj:["grigio","grigia","grigi","grigie"],art:["Il","La","I","Le"]}]},
+  trials:[
+   {type:"pick",prompt:"Trasforma «il gatto nero» al FEMMINILE PLURALE",opts:["le gatte nere","le gatti neri","la gatta nera"],ok:0,why:"Il nome diventa femminile plurale (gatte) e l'aggettivo lo segue: nerE!",hint:"Femminile + tante: che finale hanno «le gatte»? E l'aggettivo?"},
+   {type:"pick",prompt:"Trasforma «la bambina alta» al MASCHILE PLURALE",opts:["i bambini alti","i bambini alte","il bambino alto"],ok:0,why:"Maschile plurale: bambinI → altI. L'aggettivo copia il nome!",hint:"Tanti maschi: finale -i per tutti e due."},
+   {type:"pick",prompt:"Trasforma «i lupi grigi» al FEMMINILE SINGOLARE",opts:["la lupa grigia","la lupa grigio","le lupe grigie"],ok:0,why:"Una femmina: lupA → grigiA.",hint:"Una sola, femmina: finale -a."},
+   {type:"pick",prompt:"Trasforma «le gatte nere» al MASCHILE SINGOLARE",opts:["il gatto nero","il gatto nera","i gatti neri"],ok:0,why:"Un maschio solo: gattO → nerO.",hint:"Uno solo, maschio: finale -o."},
+   {type:"pick",prompt:"Trasforma «il bambino alto» al FEMMINILE PLURALE",opts:["le bambine alte","le bambine alti","la bambina alta"],ok:0,why:"Tante femmine: bambinE → altE.",hint:"Tante femmine: finale -e."},
+   {type:"pick",prompt:"Trasforma «le lupe grigie» al MASCHILE PLURALE",opts:["i lupi grigi","i lupi grigie","il lupo grigio"],ok:0,why:"Tanti maschi: lupI → grigI.accordo perfetto!",hint:"Tanti maschi: -i, -i!"}]},
+ rule:{parts:["L'aggettivo concorda con il ",{b:"nome"},": cambia ",{b:"genere"}," (maschile/femminile) e ",{b:"numero"}," (singolare/plurale) per andare d'accordo con lui."],
+  bank:["nome","genere","numero","verbo","colore"],
+  full:"L'aggettivo concorda con il nome in genere (maschile/femminile) e numero (singolare/plurale): il gatto nero → le gatte nere."},
+ apply:{intro:"L'officina degli errori: trova la forma giusta usando la regola dell'accordo!",trials:[
+  {type:"pick",prompt:"Quale frase è scritta bene?",opts:["Le stelle luminose brillano.","Le stelle luminosi brillano.","Le stella luminose brillano."],ok:0,why:"Stelle = femminile plurale → luminosE. Nome e aggettivo vanno d'accordo!",hint:"«Stelle»: femmina e tante. Che finale vuole l'aggettivo?"},
+  {type:"pick",prompt:"Completa: «I fiori profumat___»",opts:["profumato","profumati","profumata"],ok:1,why:"Fiori = maschile plurale → profumatI.",hint:"I fiori: maschi e tanti → -i."},
+  {type:"pick",prompt:"«la montagna innevata» → maschile plurale:",opts:["i monti innevati","i monti innevata","le monti innevate"],ok:0,why:"MontI (maschile plurale) → innevatI.",hint:"Tanti maschi: finale -i per entrambi."},
+  {type:"tokens",prompt:"C'è un errore! Tocca la parola SBAGLIATA: «I gatti nera dormono.»",tokens:["I","gatti","nera","dormono."],ok:[2],why:"«Gatti» è maschile plurale: l'aggettivo giusto è NERI, non «nera»!",hint:"Confronta il finale del nome con quello dell'aggettivo…"},
+  {type:"pick",prompt:"«Il bambino curioso» → femminile plurale:",opts:["Le bambine curiose","Le bambine curiosi","I bambini curiose"],ok:0,why:"BambinE → curiosE: accordo femminile plurale!",hint:"Tante femmine: -e, -e."}]}
+},
+{
+ id:"soggetto",n:3,title:"Chi è il colpevole… dell'azione?",emoji:"🕵️",hex:"#F59E0B",diff:2,skill:"Analisi logica · soggetto e predicato",
+ obj:"Individuare il soggetto con la domanda «chi? che cosa?», anche dopo il verbo o sottinteso.",
+ obs:{intro:"In ogni frase qualcuno COMPIE un'azione. Il tuo radar deve scovarlo! Clicca le parole evidenziate.",
+  questions:["In ogni frase: chi compie l'azione?","Il protagonista è sempre all'inizio della frase?","Quale domanda hai fatto per trovarlo?"],
+  sentences:[
+   {tokens:[{t:"La"},{t:"campanella",clue:"CHI suona? La campanella! È lei che compie l'azione: è la protagonista."},{t:"suona."}]},
+   {tokens:[{t:"I"},{t:"bambini",clue:"CHI ride? I bambini. Sono loro i protagonisti dell'azione «ridono»."},{t:"ridono."}]},
+   {tokens:[{t:"Nel"},{t:"prato"},{t:"un"},{t:"coniglio",clue:"CHI salta? Un coniglio! Anche se sta DOPO il verbo, è sempre lui il protagonista."},{t:"salta."}]},
+   {tokens:[{t:"Marta",clue:"CHI parte? Marta E Leo: il protagonista può essere fatto di più parole!"},{t:"e"},{t:"Leo"},{t:"partono."}]}
+  ]},
+ hyp:{q:"Come si trova il SOGGETTO di una frase?",
+  opts:[{t:"È sempre la prima parola della frase.",ok:false},
+        {t:"È la parola più lunga della frase.",ok:false},
+        {t:"Chiedo «chi? che cosa?» compie l'azione del verbo: può stare anche dopo il verbo.",ok:true}]},
+ exp:{kind:"question",title:"Il Radar del Soggetto",intro:"Scegli una frase e aziona il radar con la domanda magica. Attiva anche il predicato per vedere l'azione!",
+  sandbox:{sents:[
+   {tokens:["Il","gatto","dorme","sul","divano."],subj:[1],verb:[2],cap:"CHI dorme? <b>Il gatto</b> → soggetto!"},
+   {tokens:["Arriva","il","treno!"],subj:[2],verb:[0],cap:"Il soggetto può stare DOPO il verbo: <b>il treno</b>!"},
+   {tokens:["La","maestra","spiega","la","lezione."],subj:[1],verb:[2],cap:"CHI spiega? <b>La maestra</b>. «La lezione» riceve l'azione, non la compie."},
+   {tokens:["Giochiamo","in","cortile."],subj:[],ghost:"NOI",verb:[0],cap:"Nessuna parola-soggetto… è NASCOSTO nel verbo: <b>NOI</b> giochiamo!"}]},
+  trials:[
+   {type:"tokens",prompt:"Tocca il SOGGETTO: chi compie l'azione?",tokens:["Il","sole","scalda","la","terra."],ok:[1],why:"CHI scalda? Il sole! «La terra» riceve l'azione.",hint:"Fai la domanda: CHI scalda?"},
+   {type:"tokens",prompt:"Tocca il SOGGETTO.",tokens:["Corre","un","cervo","nel","bosco."],ok:[2],why:"CHI corre? Un cervo: il soggetto è DOPO il verbo!",hint:"CHI corre? Non fermarti alla prima parola…"},
+   {type:"tokens",multi:true,prompt:"Tocca TUTTE le parole del soggetto (possono essere più di una!).",tokens:["La","nonna","e","il","nonno","passeggiano."],ok:[1,4],why:"CHI passeggia? La nonna E il nonno: soggetto doppio!",hint:"CHI passeggia? Sono in due…"},
+   {type:"tokens",prompt:"Tocca il soggetto… oppure è nascosto?",tokens:["Studiamo","insieme."],chip:"👻 NOI (soggetto nascosto)",ok:"chip",why:"CHI studia? NOI! Il soggetto è sottinteso dentro il verbo «studiamo».",hint:"CHI studiamo? Guarda la desinenza del verbo: -iamo → noi!"},
+   {type:"tokens",prompt:"Tocca il SOGGETTO.",tokens:["Le","rondini","costruiscono","il","nido."],ok:[1],why:"CHI costruisce? Le rondini. Il nido è ciò che viene costruito.",hint:"CHI costruisce?"},
+   {type:"tokens",prompt:"Tocca il SOGGETTO.",tokens:["Nel","cielo","brilla","una","stella."],ok:[4],why:"CHE COSA brilla? Una stella: soggetto dopo il verbo!",hint:"CHE COSA brilla?"}]},
+ rule:{parts:["Il soggetto è chi o che cosa ",{b:"compie"}," l'azione. Per trovarlo chiedo «",{b:"chi"},"? che cosa?» al verbo. Il predicato è l'",{b:"azione"}," raccontata dal verbo."],
+  bank:["compie","chi","azione","dove","subisce"],
+  full:"Il soggetto è chi (o che cosa) compie l'azione: si trova chiedendo «chi? che cosa?» al verbo. Il predicato è l'azione (verbo). Il soggetto può stare dopo il verbo o essere sottinteso: «Giochiamo» → noi."},
+ apply:{intro:"Il radar è calibrato: scova il soggetto in queste frasi nuove. Attento ai tranelli!",trials:[
+  {type:"tokens",prompt:"Tocca il SOGGETTO.",tokens:["I","pompieri","spengono","il","fuoco."],ok:[1],why:"CHI spegne? I pompieri! Il fuoco RICEVE l'azione, non la compie.",hint:"CHI spegne? Non chi viene spento…"},
+  {type:"pick",prompt:"In «Arrivano le cicogne», il soggetto è…",opts:["le cicogne","arrivano","il nido"],ok:0,why:"CHI arriva? Le cicogne, anche se stanno dopo il verbo!",hint:"CHI arriva?"},
+  {type:"tokens",prompt:"Tocca il soggetto… o scopri dov'è nascosto!",tokens:["Leggiamo","un","libro."],chip:"👻 NOI (soggetto nascosto)",ok:"chip",why:"CHI legge? NOI: soggetto sottinteso nel verbo «leggiamo» (-iamo).",hint:"«Leggiamo»: chi? La desinenza -iamo ti parla di…"},
+  {type:"pick",prompt:"Il PREDICATO in «Il cane abbaia» è…",opts:["abbaia","Il cane","il"],ok:0,why:"Il predicato è l'azione raccontata dal verbo: abbaia!",hint:"Il predicato è il verbo: qual è l'azione?"},
+  {type:"tokens",prompt:"Tocca il SOGGETTO.",tokens:["Dalla","collina","scende","il","fiume."],ok:[4],why:"CHE COSA scende? Il fiume: soggetto dopo il verbo. Il radar non si fa ingannare!",hint:"CHE COSA scende?"}]}
+},
+{
+ id:"verbi",n:4,title:"La macchina del tempo dei verbi",emoji:"⏳",hex:"#E84FAF",diff:2,skill:"Verbo · tempi dell'indicativo",
+ obj:"Riconoscere presente, futuro, imperfetto e passato remoto dell'indicativo dalle espressioni di tempo.",
+ obs:{intro:"Il verbo viaggia nel tempo e cambia vestito! Clicca le forme evidenziate e confronta i finali.",
+  questions:["Quali parole ti dicono QUANDO succede l'azione?","Come cambia il finale del verbo?","Quale forma useresti per parlare di domani?"],
+  sentences:[
+   {tokens:[{t:"Tanto"},{t:"tempo"},{t:"fa,"},{t:"il"},{t:"nonno"},{t:"studiava",clue:"OGNI sera, tanto tempo fa: un'abitudine del passato. Finale -AVO!"},{t:"a"},{t:"lume"},{t:"di"},{t:"candela."}]},
+   {tokens:[{t:"Oggi"},{t:"studio",clue:"L'azione succede ADESSO, mentre parlo: finale -O."},{t:"in"},{t:"biblioteca."}]},
+   {tokens:[{t:"Domani"},{t:"studierò",clue:"Non è ancora successo: il futuro allunga il verbo e mette l'accento: -ERÒ!"},{t:"con"},{t:"Sara."}]},
+   {tokens:[{t:"Una"},{t:"volta,"},{t:"quel"},{t:"mago"},{t:"trasformò",clue:"Passato lontano, un fatto UNICO e concluso: finale -Ò con l'accento!"},{t:"una"},{t:"zucca"},{t:"in"},{t:"carrozza."}]}
+  ]},
+ hyp:{q:"Che cosa fa cambiare la forma del verbo?",
+  opts:[{t:"La lunghezza della frase.",ok:false},
+        {t:"Il tempo in cui succede l'azione: passato, presente o futuro.",ok:true},
+        {t:"Il numero delle parole prima del verbo.",ok:false}]},
+ exp:{kind:"time",title:"La Macchina del Tempo",intro:"Muovi la leva del tempo e scegli il verbo: la macchina mostra la forma giusta. Osserva i finali, poi prevedi nelle prove!",
+  sandbox:{stops:[
+   {name:"Passato remoto",when:"Tanto tempo fa, una volta",hex:"#E23A3A"},
+   {name:"Imperfetto",when:"Ogni giorno, da piccolo",hex:"#F59E0B"},
+   {name:"Presente",when:"Oggi, adesso",hex:"#2E9E5B"},
+   {name:"Futuro",when:"Domani, fra un anno",hex:"#2D7FF9"}],
+   verbs:[
+    {label:"studiare",forms:["studiai","studiavo","studio","studierò"],ends:["-ai","-avo","-o","-erò"]},
+    {label:"dormire",forms:["dormii","dormivo","dormo","dormirò"],ends:["-ii","-ivo","-o","-irò"]},
+    {label:"cantare",forms:["cantai","cantavo","canto","canterò"],ends:["-ai","-avo","-o","-erò"]}]},
+  trials:[
+   {type:"pick",prompt:"DOMANI io ___ (cantare).",opts:["canto","cantavo","canterò"],ok:2,why:"Domani = futuro: canterÒ, con l'accento sulla o!",hint:"Non è ancora successo…"},
+   {type:"pick",prompt:"DA PICCOLO, OGNI GIORNO io ___ (dormire).",opts:["dormii","dormivo","dormirò"],ok:1,why:"Un'abitudine del passato = imperfetto: dormiVO.",hint:"«Ogni giorno» = azione che si ripeteva: finale -vo."},
+   {type:"pick",prompt:"ADESSO io ___ (studiare).",opts:["studio","studiai","studierò"],ok:0,why:"Adesso = presente: studiO.",hint:"Succede mentre parli…"},
+   {type:"pick",prompt:"TANTO TEMPO FA, UNA VOLTA io ___ (cantare).",opts:["cantavo","canto","cantai"],ok:2,why:"Fatto unico e lontano = passato remoto: cantAI.",hint:"«Una volta» = fatto unico, non un'abitudine."},
+   {type:"pick",prompt:"OGNI ESTATE, DA BAMBINA, io ___ (giocare).",opts:["giocai","giocavo","giocherò"],ok:1,why:"Abitudine che si ripeteva = imperfetto: giocaVO.",hint:"«Ogni estate» = si ripeteva…"},
+   {type:"pick",prompt:"UNA VOLTA io ___ (dormire) sotto le stelle.",opts:["dormivo","dormii","dormo"],ok:1,why:"Fatto unico e concluso = passato remoto: dormII.",hint:"«Una volta» = passato remoto, finale -ii per dormire."}]},
+ rule:{parts:["Il verbo cambia forma secondo il ",{b:"tempo"},": oggi → presente, domani → ",{b:"futuro"},", ieri → ",{b:"passato"},". L'imperfetto (finale ",{b:"-vo"},") racconta abitudini del passato."],
+  bank:["tempo","futuro","passato","-vo","luogo","-mente"],
+  full:"Il verbo cambia con il tempo: presente (studio), futuro (studierò), imperfetto per abitudini passate (studiavo, finale -vo), passato remoto per fatti unici e lontani (studiai, dormii)."},
+ apply:{intro:"Programma la macchina del tempo sulle frasi nuove e scegli la forma giusta!",trials:[
+  {type:"pick",prompt:"Fra un anno io ___ alla scuola media.",opts:["vado","andavo","andrò"],ok:2,why:"Fra un anno = futuro: andrÒ!",hint:"Deve ancora succedere…"},
+  {type:"pick",prompt:"Da bambina, la nonna ___ ogni domenica.",opts:["balla","ballava","ballerà"],ok:1,why:"«Ogni domenica» nel passato = abitudine → imperfetto: ballaVA.",hint:"Si ripeteva ogni domenica…"},
+  {type:"pick",prompt:"Adesso io ___ la merenda.",opts:["mangiavo","mangio","mangerò"],ok:1,why:"Adesso = presente: mangiO.",hint:"Sta succedendo ora!"},
+  {type:"pick",prompt:"Tanto tempo fa, quel cavaliere ___ il drago, una sola volta.",opts:["sfidava","sfida","sfidÒ"],ok:2,why:"Fatto unico e lontano = passato remoto: sfidÒ.",hint:"«Una sola volta» + tanto tempo fa…"},
+  {type:"pick",prompt:"Ieri sera, mentre io ___, è saltata la luce.",opts:["dormivo","dormii","dormirò"],ok:0,why:"Azione che DURAVA nel passato = imperfetto: dormiVO.",hint:"Stavi dormendo, azione in svolgimento…"},
+  {type:"pick",prompt:"Domani io ___ ai giardini con te.",opts:["gioco","giocavo","giocherò"],ok:2,why:"Futuro di giocare: si aggiunge l'h → giocheRÒ!",hint:"Domani = futuro. E attento: giocare vuole l'h!"}]}
+},
+{
+ id:"apostrofo",n:5,title:"Apostrofo o accento? I gemelli diversi",emoji:"🔦",hex:"#E23A3A",diff:3,skill:"Ortografia · è/e e un/un'",
+ obj:"Usare la prova di sostituzione (essere) e di espansione (uno/una) per scegliere è/e e un/un'.",
+ obs:{intro:"Sembrano gemelli, ma non lo sono! Clicca le parole evidenziate: ogni indizio contiene una PROVA da fare.",
+  questions:["Quando «e» diventa «è»?","Che cosa è «caduto» dove c'è l'apostrofo?","Le prove di sostituzione ti aiutano a decidere?"],
+  sentences:[
+   {tokens:[{t:"La"},{t:"luna"},{t:"è",clue:"Prova a sostituirlo: «La luna ESSERE piena»… la frase ha ancora SENSO!"},{t:"piena."}]},
+   {tokens:[{t:"Marco"},{t:"e",clue:"Sostituisci: «Marco ESSERE Livia»… NON ha senso! Qui unisce due amici."},{t:"Livia"},{t:"ridono."}]},
+   {tokens:[{t:"Un",clue:"Allungalo: UNO amico. «Uno» sta bene intero: nessuna lettera cade, niente apostrofo."},{t:"amico"},{t:"arriva."}]},
+   {tokens:[{t:"Un'amica",clue:"Allungalo: UNA amica → la A finale di «una» è CADUTA! L'apostrofo è il suo segnaposto."},{t:"arriva."}]}
+  ]},
+ hyp:{q:"Quando serve l'apostrofo in «un'»?",
+  opts:[{t:"Quando dietro c'è una parola femminile che inizia per vocale: un'amica = una amica.",ok:true},
+        {t:"Sempre, davanti a tutte le parole.",ok:false},
+        {t:"Quando la parola che segue è maschile.",ok:false}]},
+ exp:{kind:"lens",title:"La Lente Espanditrice",intro:"Scegli il caso, poi tira la leva della lente: le parole si espandono e rivelano il segreto!",
+  sandbox:{un:[
+    {show:"un amico",full:"uno amico",drop:null,apost:false,note:"UNO amico → nessuna vocale cade → si scrive UN AMICO"},
+    {show:"un'amica",full:"una amica",drop:"a",apost:true,note:"UNA amica → la A cade → si scrive UN'AMICA"},
+    {show:"un bambino",full:"uno bambino",drop:null,apost:false,note:"UNO bambino → niente cade → UN BAMBINO"},
+    {show:"un'elefantessa",full:"una elefantessa",drop:"a",apost:true,note:"UNA elefantessa → la A cade → UN'ELEFANTESSA"}],
+   e:[
+    {gap:"Il cielo __ blu",test:"Il cielo ESSERE blu",sense:true,ans:"è"},
+    {gap:"Sofia __ Marco",test:"Sofia ESSERE Marco",sense:false,ans:"e"},
+    {gap:"La torta __ pronta",test:"La torta ESSERE pronta",sense:true,ans:"è"},
+    {gap:"Pane __ marmellata",test:"Pane ESSERE marmellata",sense:false,ans:"e"}]},
+  trials:[
+   {type:"pick",prompt:"C'__ una sorpresa per te.",opts:["c'è","ce","c'e"],ok:0,why:"C'è = ci + È (verbo essere): apostrofo E accento!",hint:"Prova: «ci ESSERE una sorpresa»… ha senso!"},
+   {type:"pick",prompt:"Ho un__ zaino nuovo.",opts:["un","un'"],ok:0,why:"Zaino è maschile: UNO zaino → un, senza apostrofo.",hint:"Espandi: UNO o UNA zaino?"},
+   {type:"pick",prompt:"La mia squadra __ fortissima.",opts:["è","e"],ok:0,why:"Prova: «la squadra ESSERE fortissima» ✓ → è il verbo, vuole l'accento!",hint:"Sostituisci con ESSERE…"},
+   {type:"pick",prompt:"Vorrei un__ arancia.",opts:["un","un'"],ok:1,why:"Arancia è femminile: UNA arancia → la a cade → un'arancia.",hint:"Espandi: UNO o UNA arancia?"},
+   {type:"pick",prompt:"Tu __ io siamo amici.",opts:["è","e"],ok:1,why:"«Tu ESSERE io»? ✗ Non ha senso: qui unisce → e senza accento.",hint:"Unisce due persone o è il verbo essere?"},
+   {type:"pick",prompt:"Un__ aquila vola alta.",opts:["un","un'"],ok:1,why:"Aquila è femminile: UNA aquila → un'aquila.",hint:"L'aquila è maschio o femmina?"},
+   {type:"pick",prompt:"Il gelato __ al cioccolato.",opts:["è","e"],ok:0,why:"«Il gelato ESSERE al cioccolato» ✓ → è!",hint:"Fai la prova di ESSERE."},
+   {type:"pick",prompt:"Un__ orso dorme nella tana.",opts:["un","un'"],ok:0,why:"Orso è maschile: UNO orso → un orso. L'apostrofo è solo per i femminili!",hint:"Espandi: UNO orso. Cade qualcosa?"}]},
+ rule:{parts:["L'apostrofo di un' segna una vocale caduta: un'amica = ",{b:"una"}," amica. L'accento su è significa «",{b:"essere"},"»: se la prova non funziona, usa ",{b:"e"}," senza accento."],
+  bank:["una","essere","e","uno","avere"],
+  full:"un' si usa solo davanti a nomi femminili che iniziano per vocale (un'amica = una amica). è con l'accento è il verbo essere (La luna è piena); e senza accento unisce (Marco e Livia)."},
+ apply:{intro:"I gemelli diversi sono scappati nel testo: rimettili al posto giusto!",trials:[
+  {type:"pick",prompt:"Quale frase è corretta?",opts:["L'ape è un insetto.","L'ape e un insetto.","L'ape è un'insetto."],ok:0,why:"È = verbo essere ✓; insetto è maschile → UN insetto, senza apostrofo.",hint:"Due controlli: la prova di ESSERE e l'espansione di un…"},
+  {type:"pick",prompt:"un__ idea geniale",opts:["un","un'"],ok:1,why:"Idea è femminile: UNA idea → un'idea!",hint:"UNO o UNA idea?"},
+  {type:"pick",prompt:"Il mare __ calmo e il sole __ caldo.",opts:["è / è","e / e","è / e"],ok:0,why:"«Il mare ESSERE calmo» ✓ e «il sole ESSERE caldo» ✓: due verbi, due accenti!",hint:"Fai la prova di ESSERE due volte…"},
+  {type:"pick",prompt:"un__ albero altissimo",opts:["un","un'"],ok:0,why:"Albero è maschile: UNO albero → un albero.",hint:"UNO albero: cade qualche vocale?"},
+  {type:"pick",prompt:"Dov'__ la mia penna?",opts:["Dov'è","Dove","Dov'e"],ok:0,why:"Dov'è = dove + È (verbo essere): apostrofo e accento!",hint:"«Dove ESSERE la mia penna» ✓"}]}
+},
+{
+ id:"oggetto",n:6,title:"Il caso del pacchetto misterioso",emoji:"📦",hex:"#12A5B0",diff:3,skill:"Analisi logica · complemento oggetto",
+ obj:"Distinguere il complemento oggetto (chi? che cosa?) dai complementi indiretti con la prova delle domande.",
+ obs:{intro:"L'azione del verbo viaggia come un pacchetto: a volte arriva DIRETTA a qualcuno, a volte serve una preposizione-corriere. Clicca gli indizi!",
+  questions:["Quali parole rispondono a CHI? CHE COSA?","C'è una preposizione (a, di, con, per…) in mezzo?","Dove arriva direttamente l'azione?"],
+  sentences:[
+   {tokens:[{t:"La"},{t:"postina"},{t:"consegna"},{t:"una"},{t:"lettera.",clue:"CHE COSA consegna? UNA LETTERA! Risponde subito, senza paroline in mezzo."}]},
+   {tokens:[{t:"Leo"},{t:"abbraccia"},{t:"la"},{t:"nonna.",clue:"CHI abbraccia? LA NONNA! Nessun «a», «di», «con» davanti: il pacchetto arriva diretto."}]},
+   {tokens:[{t:"Il"},{t:"vento"},{t:"spinge"},{t:"le"},{t:"nuvole.",clue:"CHE COSA spinge? LE NUVOLE: l'azione arriva diretta come un pacchetto!"}]},
+   {tokens:[{t:"Sara"},{t:"parla"},{t:"con"},{t:"la"},{t:"maestra.",clue:"«Parla CHI? CHE COSA?»… non funziona! Serve il corriere CON: è un altro tipo di complemento."}]}
+  ]},
+ hyp:{q:"Come riconosci il COMPLEMENTO OGGETTO?",
+  opts:[{t:"È sempre l'ultima parola della frase.",ok:false},
+        {t:"Ha sempre una preposizione davanti.",ok:false},
+        {t:"Risponde a «chi? che cosa?» dopo il verbo, senza preposizioni in mezzo.",ok:true}]},
+ exp:{kind:"qtest",title:"Lo Smistapacchi delle Domande",intro:"Scegli una frase e lancia le domande: lo smistapacchi illumina il pacchetto giusto. Poi classifica nelle prove!",
+  sandbox:{sents:[
+   {tokens:["Il","cuoco","prepara","la","pasta."],obj:[3,4],ind:null,v:"prepara"},
+   {tokens:["Mia","sorella","scrive","una","lettera."],obj:[3,4],ind:null,v:"scrive"},
+   {tokens:["Anna","telefona","a","Marco."],obj:null,ind:[2,3],v:"telefona"},
+   {tokens:["Il","papà","lava","la","macchina."],obj:[3,4],ind:null,v:"lava"}]},
+  trials:[
+   {type:"sort",item:"Marco mangia una mela.",focus:"una mela",cats:["📦 OGGETTO (chi? che cosa?)","🧭 INDIRETTO (con preposizione)"],ok:0,why:"Mangia CHE COSA? Una mela: risposta diretta, senza preposizioni!",hint:"Fai la domanda: mangia CHI? CHE COSA?"},
+   {type:"sort",item:"Luisa scrive a Sara.",focus:"a Sara",cats:["📦 OGGETTO (chi? che cosa?)","🧭 INDIRETTO (con preposizione)"],ok:1,why:"Scrive A CHI? A Sara: c'è la preposizione A → indiretto.",hint:"C'è una preposizione davanti? A chi?"},
+   {type:"sort",item:"Il portiere para il rigore.",focus:"il rigore",cats:["📦 OGGETTO (chi? che cosa?)","🧭 INDIRETTO (con preposizione)"],ok:0,why:"Para CHE COSA? Il rigore: pacchetto diretto!",hint:"Para CHI? CHE COSA?"},
+   {type:"sort",item:"Noi giochiamo in giardino.",focus:"in giardino",cats:["📦 OGGETTO (chi? che cosa?)","🧭 INDIRETTO (con preposizione)"],ok:1,why:"Giochiamo DOVE? In giardino: non risponde a chi?/che cosa? → indiretto.",hint:"Risponde a DOVE, non a CHE COSA…"},
+   {type:"sort",item:"La mamma chiama il dottore.",focus:"il dottore",cats:["📦 OGGETTO (chi? che cosa?)","🧭 INDIRETTO (con preposizione)"],ok:0,why:"Chiama CHI? Il dottore: nessuna preposizione → oggetto!",hint:"Chiama CHI?"},
+   {type:"sort",item:"Il nonno racconta una storia.",focus:"una storia",cats:["📦 OGGETTO (chi? che cosa?)","🧭 INDIRETTO (con preposizione)"],ok:0,why:"Racconta CHE COSA? Una storia: diretta!",hint:"Racconta CHE COSA?"},
+   {type:"sort",item:"Paolo ride con gli amici.",focus:"con gli amici",cats:["📦 OGGETTO (chi? che cosa?)","🧭 INDIRETTO (con preposizione)"],ok:1,why:"Ride CON CHI? Con gli amici: il corriere CON → indiretto.",hint:"C'è il corriere CON…"},
+   {type:"sort",item:"La classe visita il museo.",focus:"il museo",cats:["📦 OGGETTO (chi? che cosa?)","🧭 INDIRETTO (con preposizione)"],ok:0,why:"Visita CHE COSA? Il museo: pacchetto oggetto!",hint:"Visita CHE COSA?"}]},
+ rule:{parts:["Il complemento oggetto risponde a «",{b:"chi"},"? ",{b:"che cosa"},"?» e riceve l'azione ",{b:"direttamente"},", senza ",{b:"preposizioni"}," in mezzo."],
+  bank:["chi","che cosa","direttamente","preposizioni","dove","verbi"],
+  full:"Il complemento oggetto risponde a «chi? che cosa?» senza preposizioni: «Leo abbraccia la nonna». Gli altri (a chi? dove? con chi?…) sono complementi indiretti."},
+ apply:{intro:"Caso finale! Smista i pacchetti nelle frasi nuove e diventa Leggenda delle Parole.",trials:[
+  {type:"pick",prompt:"In «Il gatto rincorre una lucertola», il complemento oggetto è…",opts:["una lucertola","Il gatto","rincorre"],ok:0,why:"Rincorre CHE COSA? Una lucertola: pacchetto diretto!",hint:"Rincorre CHI? CHE COSA?"},
+  {type:"pick",prompt:"La domanda «CHI? CHE COSA?» funziona con…",opts:["beve un succo","pensa a domani","parte per Roma"],ok:0,why:"Beve CHE COSA? Un succo ✓. «A domani» e «per Roma» hanno i corrieri-preposizioni!",hint:"Cerca il verbo senza preposizioni dopo…"},
+  {type:"tokens",multi:true,prompt:"Tocca il COMPLEMENTO OGGETTO (tutte le sue parole).",tokens:["La","nonna","prepara","i","biscotti","per","noi."],ok:[3,4],why:"Prepara CHE COSA? I biscotti ✓. «Per noi» risponde a PER CHI? → indiretto.",hint:"Prepara CHE COSA? Attento al corriere PER…"},
+  {type:"pick",prompt:"«Marco telefona a Luca»: «a Luca» è…",opts:["complemento indiretto (A CHI?)","complemento oggetto (CHI?)","il soggetto"],ok:0,why:"Telefona A CHI? A Luca: la preposizione A lo rende indiretto.",hint:"C'è la preposizione A…"},
+  {type:"tokens",multi:true,prompt:"Tocca il COMPLEMENTO OGGETTO.",tokens:["Il","vento","apre","la","finestra."],ok:[3,4],why:"Apre CHE COSA? La finestra: pacchetto oggetto consegnato!",hint:"Apre CHE COSA?"}]}
+}];
+
+/* ================= STATO ================= */
+const LSKEY="lab-parole-v1";
+const DEF={name:"",settings:{sound:true,help:"esploratore",hl:"#FFD449",size:100,hileg:false,timer:false},progress:{},rules:{}};
+let S;
+try{S=Object.assign({},DEF,JSON.parse(localStorage.getItem(LSKEY)||"{}"));S.settings=Object.assign({},DEF.settings,S.settings);S.progress=S.progress||{};S.rules=S.rules||{}}catch(e){S=JSON.parse(JSON.stringify(DEF))}
+function save(){try{localStorage.setItem(LSKEY,JSON.stringify(S))}catch(e){}}
+let view="home", run=null, trialTimer=null, toastT=null;
+
+/* ================= AUDIO ================= */
+let AC=null;
+function ac(){if(!AC){const C=window.AudioContext||window.webkitAudioContext;if(C)AC=new C()}if(AC&&AC.state==="suspended")AC.resume();return AC}
+function tone(f,d,type="sine",g=.14,when=0,f2){const c=ac();if(!c)return;const t=c.currentTime+when;const o=c.createOscillator(),v=c.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);v.gain.setValueAtTime(g,t);v.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(v).connect(c.destination);o.start(t);o.stop(t+d+.02)}
+function noise(d=.2,g=.08,fc=1200){const c=ac();if(!c)return;const n=c.createBufferSource(),b=c.createBuffer(1,c.sampleRate*d,c.sampleRate),ch=b.getChannelData(0);for(let i=0;i<ch.length;i++)ch[i]=Math.random()*2-1;n.buffer=b;const f=c.createBiquadFilter();f.type="bandpass";f.frequency.value=fc;const v=c.createGain();v.gain.setValueAtTime(g,c.currentTime);v.gain.exponentialRampToValueAtTime(.0001,c.currentTime+d);n.connect(f).connect(v).connect(c.destination);n.start()}
+function sfx(name){if(!S.settings.sound)return;if(!ac())return;switch(name){
+ case"click":tone(1150,.05,"triangle",.06);break;
+ case"pop":tone(660,.09,"sine",.14);tone(990,.14,"sine",.12,.06);break;
+ case"buzz":tone(170,.18,"square",.07);tone(120,.16,"square",.05,.05);break;
+ case"clue":tone(520,.07,"triangle",.1);tone(780,.1,"triangle",.1,.07);noise(.08,.03,2400);break;
+ case"whoosh":noise(.3,.09,900);tone(300,.25,"sine",.05,0,600);break;
+ case"stamp":tone(95,.22,"sine",.22);noise(.12,.1,300);break;
+ case"star":tone(1046,.14,"triangle",.12);tone(1568,.2,"triangle",.1,.08);break;
+ case"fanfare":[523,659,784,1047].forEach((f,i)=>tone(f,.28,"triangle",.13,i*.13));tone(1319,.5,"triangle",.11,.55);break;
+ case"lever":tone(240,.12,"sawtooth",.05,0,420);noise(.1,.04,700);break;
+ case"tick":tone(880,.03,"square",.035);break;
+}}
+document.addEventListener("pointerdown",()=>{if(S.settings.sound)ac()},{once:true});
+
+/* ================= CONFETTI ================= */
+const fx={ps:[],run:false,cv:$("#fx"),ctx:null};
+function fxSize(){const d=Math.min(devicePixelRatio||1,2);fx.cv.width=innerWidth*d;fx.cv.height=innerHeight*d;fx.cv.style.width=innerWidth+"px";fx.cv.style.height=innerHeight+"px";fx.ctx=fx.cv.getContext("2d");fx.ctx.setTransform(d,0,0,d,0,0)}
+fxSize();addEventListener("resize",fxSize);
+const FXCOL=["#E23A3A","#FFD449","#2E9E5B","#2D7FF9","#E84FAF","#F59E0B","#12A5B0"];
+function boom(n=140){if(RM)return;for(let i=0;i<n;i++){fx.ps.push({x:Math.random()*innerWidth,y:-20-Math.random()*innerHeight*.3,vx:(Math.random()-.5)*2.4,vy:2+Math.random()*3.4,w:6+Math.random()*7,h:8+Math.random()*8,r:Math.random()*Math.PI,vr:(Math.random()-.5)*.24,c:FXCOL[i%FXCOL.length],life:1})}
+ if(!fx.run){fx.run=true;requestAnimationFrame(fxTick)}}
+function fxTick(){const c=fx.ctx;c.clearRect(0,0,innerWidth,innerHeight);fx.ps=fx.ps.filter(p=>p.y<innerHeight+30&&p.life>0);for(const p of fx.ps){p.x+=p.vx+Math.sin(p.y*.02)*.6;p.y+=p.vy;p.vy+=.045;p.r+=p.vr;p.life-=.0028;c.save();c.translate(p.x,p.y);c.rotate(p.r);c.globalAlpha=Math.max(0,Math.min(1,p.life*1.4));c.fillStyle=p.c;c.fillRect(-p.w/2,-p.h/2,p.w,p.h);c.restore()}
+ if(fx.ps.length){requestAnimationFrame(fxTick)}else{fx.run=false;c.clearRect(0,0,innerWidth,innerHeight)}}
+
+/* ================= TOAST ================= */
+function toast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),2600)}
+
+/* ================= HEADER / NAV ================= */
+function totalStars(){return MISSIONS.reduce((a,m)=>a+((S.progress[m.id]||{}).stars||0),0)}
+function doneCount(){return MISSIONS.filter(m=>(S.progress[m.id]||{}).done).length}
+function rankName(){const s=totalStars();if(s>=16)return"Leggenda delle Parole 🏆";if(s>=12)return"Ispettore della Lingua 🎖️";if(s>=7)return"Investigatore Grammaticale 🕵️";if(s>=3)return"Esploratore di Frasi 🧭";return"Apprendista delle Parole 🌱"}
+function renderHeader(){$("#starsum").textContent=totalStars();$("#namechip").textContent=S.name?("Agente "+S.name):"";const nb=Object.keys(S.rules).length;const b=$("#nbbadge");b.hidden=!nb;b.textContent=nb;
+ const sb=$("#soundbtn");sb.textContent=S.settings.sound?"🔊":"🔇";sb.classList.toggle("off",!S.settings.sound);sb.setAttribute("aria-pressed",S.settings.sound);sb.title=S.settings.sound?"Suoni attivi — clicca per silenziare tutto":"Suoni silenziati — clicca per riattivarli";
+ $("#soundchk").checked=S.settings.sound}
+function setNav(id){$$(".nlink").forEach(a=>a.classList.remove("active"));if(id)$(id).classList.add("active")}
+function showView(v){clearTrialTimer();if(v!=="mission")run=null;view=v;$("#view-home").hidden=v!=="home";$("#view-mission").hidden=v!=="mission";$("#view-notebook").hidden=v!=="notebook";scrollTo({top:0,behavior:"instant"in document.documentElement.style?"instant":"auto"});if(v==="home"){renderHome();setNav("#nav-mappa")}if(v==="notebook"){renderNotebook();setNav("#nav-quaderno")}}
+$("#brandlink").addEventListener("click",e=>{e.preventDefault();sfx("click");showView("home")});
+$("#nav-mappa").addEventListener("click",e=>{e.preventDefault();sfx("click");const go=()=>{const t=$("#casi");t&&window.scrollTo({top:t.getBoundingClientRect().top+scrollY-100,behavior:"smooth"})};if(view!=="home"){showView("home");setTimeout(go,60)}else go();setNav("#nav-mappa")});
+$("#nav-metodo").addEventListener("click",e=>{e.preventDefault();sfx("click");const go=()=>{const t=$("#metodo");t&&window.scrollTo({top:t.getBoundingClientRect().top+scrollY-100,behavior:"smooth"})};if(view!=="home"){showView("home");setTimeout(go,60)}else go();setNav("#nav-metodo")});
+$("#nav-quaderno").addEventListener("click",e=>{e.preventDefault();sfx("click");showView("notebook")});
+$("#soundbtn").addEventListener("click",()=>{S.settings.sound=!S.settings.sound;save();renderHeader();if(S.settings.sound)sfx("pop");toast(S.settings.sound?"🔊 Suoni del laboratorio attivi":"🔇 Tutti i suoni silenziati")});
+
+/* ================= HOME ================= */
+function unlocked(i){return i===0||!!(S.progress[MISSIONS[i-1].id]||{}).done}
+function firstOpen(){for(let i=0;i<MISSIONS.length;i++){if(unlocked(i)&&!(S.progress[MISSIONS[i].id]||{}).done)return i}return 0}
+function renderHome(){
+ $("#agentname").value=S.name;
+ $("#casesdone").textContent=doneCount()+"/6";
+ $("#starsum2").textContent=totalStars()+" ⭐";
+ $("#ranktxt").textContent=rankName();
+ const C=150.8;$("#ringfg").style.strokeDashoffset=C*(1-doneCount()/6);
+ const fo=firstOpen();$("#startbtn").innerHTML=(doneCount()===6?"🔁 Rigioca un caso":(doneCount()===0?"Inizia a indagare →":"Continua: Caso "+(fo+1)+" →"));
+ const g=$("#casegrid");g.innerHTML="";
+ MISSIONS.forEach((m,i)=>{
+  const pr=S.progress[m.id]||{},lock=!unlocked(i),done=!!pr.done;
+  const card=document.createElement("article");
+  card.className="mcard rise"+(lock?" locked":"")+(done?" done":"");
+  card.style.setProperty("--rot",(i%2?1:-1)*(0.4+(i%3)*0.3)+"deg");
+  card.style.animationDelay=(0.08*i+0.1)+"s";
+  const stars=pr.stars||0;
+  card.innerHTML=`<span class="tape"></span>
+   <div class="toprow"><div class="blob" style="background:linear-gradient(135deg,${m.hex},${m.hex}CC)">${m.emoji}</div>
+   <div><span class="casochip" style="background:${m.hex}">Caso Nº ${m.n}</span><h3>${m.title}</h3></div></div>
+   <div class="chips"><span class="chip-s">${m.skill}</span><span class="diff">Difficoltà <i>${"●".repeat(m.diff)}${"○".repeat(3-m.diff)}</i></span></div>
+   <p class="obj">🎯 ${m.obj}</p>
+   <div class="mfoot">
+    <span class="stars" aria-label="${stars} stelle su 3">${[1,2,3].map(k=>`<span class="${k<=stars?"on":"off"}">★</span>`).join("")}</span>
+    ${lock?`<span class="locknote">🔒 Risolvi il Caso ${m.n-1}</span>`:`<button class="btn small ${done?"":"primary"} go">${done?"🔁 Riesplora":"🔍 Indaga!"}</button>`}
+   </div>`;
+  card.addEventListener("click",e=>{
+   if(lock){card.classList.remove("shake");void card.offsetWidth;card.classList.add("shake");sfx("buzz");toast("🔒 Prima risolvi il Caso "+(m.n-1)+"!");return}
+   if(e.target.closest(".go")||!lock){enterMission(m.id)}
+  });
+  g.appendChild(card);
+ });
+ $("#objlist").innerHTML=MISSIONS.map(m=>`<li><b>Caso ${m.n} — ${m.emoji} ${m.title}:</b> ${m.obj}</li>`).join("");
+ scanRev();
+}
+$("#agentname").addEventListener("change",e=>{S.name=e.target.value.trim().slice(0,24);save();renderHeader();if(S.name){toast("🕵️ Benvenuto/a, Agente "+S.name+"!");sfx("clue")}});
+$("#startbtn").addEventListener("click",()=>{sfx("whoosh");enterMission(MISSIONS[firstOpen()].id)});
+let resetArm=false,resetT=null;
+$("#resetbtn").addEventListener("click",e=>{const b=e.currentTarget;if(!resetArm){resetArm=true;b.textContent="⚠️ Sicuro? Clicca ancora per azzerare";b.classList.add("primary");clearTimeout(resetT);resetT=setTimeout(()=>{resetArm=false;b.textContent="🗑️ Azzera tutti i progressi";b.classList.remove("primary")},3200);return}
+ clearTimeout(resetT);resetArm=false;S.progress={};S.rules={};save();b.textContent="🗑️ Azzera tutti i progressi";b.classList.remove("primary");renderHeader();renderHome();sfx("stamp");toast("🧹 Progressi azzerati: si ricomincia da Caso 1!")});
+
+/* scarabocchi: parallasse */
+let pxTick=false;
+addEventListener("scroll",()=>{if(pxTick)return;pxTick=true;requestAnimationFrame(()=>{pxTick=false;if(view!=="home")return;const y=scrollY;$$(".doodle").forEach(d=>{d.style.transform=`translate3d(0,${y*parseFloat(d.dataset.px||0)}px,0)`})})},{passive:true});
+
+/* reveal */
+const IO=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add("in");IO.unobserve(x.target)}}),{threshold:.12});
+function scanRev(){$$("[data-rev]:not(.in)").forEach(el=>IO.observe(el))}
+
+/* mascotte: consigli */
+const TIPS=["Ciao! Sono <b>Lumino</b>, la lente investigativa. Clicca le parole evidenziate per raccogliere indizi!","Lo sapevi? «Felicità» è un nome anche se non si può toccare!","I nomi propri vogliono la maiuscola: proprio come il tuo!","Un'ape ha l'apostrofo, un orso no. Scopri il perché nel Caso 5…","Il soggetto può nascondersi: «Giochiamo!» → chi? NOI!","Domani è futuro: il verbo si allunga… «giocherò»!","CHI? CHE COSA? Sono le domande magiche del pacchetto oggetto.","Una vera scienziata sbaglia ipotesi e le corregge: qui si può!"];
+let tipI=0;
+setInterval(()=>{if(view!=="home"||document.hidden)return;const b=$("#bubble");b.classList.add("fade");setTimeout(()=>{tipI=(tipI+1)%TIPS.length;b.innerHTML=TIPS[tipI];b.classList.remove("fade")},420)},7000);
+
+/* ================= QUADERNO ================= */
+function fmtDate(t){try{return new Date(t).toLocaleDateString("it-IT",{day:"numeric",month:"long",year:"numeric"})}catch(e){return""}}
+function renderNotebook(){
+ const body=$("#nbbody");const ids=MISSIONS.filter(m=>S.rules[m.id]);
+ if(!ids.length){body.innerHTML=`<div class="nbempty"><div class="em">📓✨</div><p>Il quaderno è ancora vuoto…<br>ogni regola che scopri verrà scritta qui!</p><button class="btn primary" id="nbstart">🔍 Risolvi il tuo primo caso</button></div>`;$("#nbstart").addEventListener("click",()=>enterMission(MISSIONS[firstOpen()].id));return}
+ body.innerHTML=`<div class="rulelist">${ids.map((m,i)=>{const pr=S.progress[m.id]||{};return`<article class="nbcard rise" style="--rot:${i%2?0.7:-0.7}deg;animation-delay:${i*0.08}s">
+  <div class="nbtop"><span class="em">${m.emoji}</span><div><small>Regola Nº ${m.n} · ${m.skill}</small><b>${m.title}</b></div></div>
+  <p>${m.rule.full}</p>
+  <div class="nbfoot"><span>Scoperta il ${fmtDate(S.rules[m.id].date)}</span><span class="stars">${[1,2,3].map(k=>`<span class="${k<=(pr.stars||0)?"on":"off"}">★</span>`).join("")}</span></div></article>`}).join("")}</div>`;
+}
+function exportTxt(){
+ const L=[];L.push("📓 IL QUADERNO DELLE SCOPERTE — Il Laboratorio delle Parole");
+ L.push("Investigatore: "+(S.name||"Anonimo")+" · Classe 5ª · Metodo Inquiry");
+ L.push("Esportato il "+fmtDate(Date.now()));
+ L.push("Casi risolti: "+doneCount()+"/6 · Stelle: "+totalStars()+"/18 · Grado: "+rankName());
+ L.push("────────────────────────────────────");
+ const ids=MISSIONS.filter(m=>S.rules[m.id]);
+ if(!ids.length)L.push("Nessuna regola ancora scoperta: risolvi il tuo primo caso!");
+ ids.forEach(m=>{L.push("");L.push("REGOLA Nº "+m.n+" — "+m.title.toUpperCase());L.push("(scoperta il "+fmtDate(S.rules[m.id].date)+")");L.push(m.rule.full)});
+ L.push("");L.push("────────────────────────────────────");
+ L.push("Osserva → Ipotizza → Sperimenta → Concludi → Applica:");
+ L.push("le regole non si imparano a memoria, si SCOPRONO!");
+ const blob=new Blob([L.join("\n")],{type:"text/plain;charset=utf-8"});
+ const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="quaderno-delle-scoperte.txt";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),800);
+ sfx("clue");toast("📥 Quaderno scaricato!");
+}
+$("#dlbtn").addEventListener("click",exportTxt);
+$("#printbtn").addEventListener("click",()=>{renderNotebook();window.print()});
+
+/* ================= MOTORE PROVE (trial) ================= */
+function newTS(){return{i:0,first:0,streak:0,attempts:0,answered:false,revealed:false,lastOk:false,picked:null,perms:{},results:[],done:false}}
+function clearTrialTimer(){if(trialTimer){clearInterval(trialTimer);trialTimer=null}}
+function curTrials(){if(!run)return null;if(run.phase===2)return{ts:run.exp,list:run.m.exp.trials};if(run.phase===4)return{ts:run.app,list:run.m.apply.trials};return null}
+function renderTrials(host,ts,list,opts){
+ clearTrialTimer();host.innerHTML="";
+ if(ts.done){
+  const sc=document.createElement("div");sc.className="sumcard";
+  sc.innerHTML=`<div class="big">${opts.doneTitle||"Prove concluse! 🧪"}</div><div class="score">🎯 ${ts.first}/${list.length} al primo colpo</div><p style="font-weight:700;color:var(--ink-soft);font-size:.9em">${opts.doneMsg||""}</p><div style="margin-top:14px"><button class="btn small ghost redo">↺ Rifai le prove</button></div>`;
+  sc.querySelector(".redo").addEventListener("click",()=>{sfx("click");const fresh=newTS();Object.assign(ts,fresh);renderTrials(host,ts,list,opts);updatePhasebar()});
+  host.appendChild(sc);return;
+ }
+ const tr=list[ts.i];
+ const card=document.createElement("div");card.className="card trialcard";
+ const dots=list.map((_,k)=>{const r=ts.results[k];return`<span class="dot ${k===ts.i?"cur":r===1?"ok":r===0?"miss":""}"></span>`}).join("");
+ card.innerHTML=`<div class="thead"><span class="tl">${opts.label||"Prova"} ${ts.i+1}/${list.length}</span><span class="dots">${dots}</span>${ts.streak>=2?`<span class="streak">🔥 serie ×${ts.streak}</span>`:""}
+ <span class="timerring" hidden><svg viewBox="0 0 36 36"><circle class="tbg" cx="18" cy="18" r="14"/><circle class="tfg" cx="18" cy="18" r="14" stroke-dasharray="88" stroke-dashoffset="0"/></svg><span class="tsec">20</span></span></div>
+ <div class="prompt">${tr.prompt||"Che cos'è questa parola?"}</div>
+ ${S.settings.help==="guidato"&&tr.hint?`<div class="hintline">🤝 Aiuto: ${tr.hint}</div>`:""}
+ <div class="tbody"></div>
+ <div class="feedback" aria-live="polite"></div>
+ <div class="avantirow"><button class="btn sunny small avanti" hidden>${ts.i===list.length-1?"Concludi ▸":"Avanti ▸"}</button></div>`;
+ const body=card.querySelector(".tbody"),fb=card.querySelector(".feedback"),av=card.querySelector(".avanti");
+ const finish=ok=>{
+  ts.answered=true;ts.lastOk=ok;ts.results[ts.i]=ok&&ts.attempts===0?1:0;
+  if(ok&&ts.attempts===0){ts.first++;ts.streak++}else if(!ok){ts.streak=0}
+  clearTrialTimer();card.querySelector(".timerring").hidden=true;
+  paint();sfx(ok?"pop":"buzz");
+  av.hidden=false;av.focus({preventScroll:true});
+  updatePhasebar();
+ };
+ const paint=()=>{
+  const reveal=ts.revealed||ts.lastOk;
+  body.querySelectorAll("button").forEach(b=>{b.disabled=true});
+  if(tr.type==="pick"){body.querySelectorAll(".optbtn").forEach(b=>{const k=+b.dataset.k;if(k===tr.ok&&reveal)b.classList.add("good");else if(b.classList.contains("was")&&!ts.lastOk)b.classList.add("bad")})}
+  if(tr.type==="sort"){body.querySelectorAll(".catbtn").forEach(b=>{const k=+b.dataset.k;if(k===tr.ok&&reveal)b.classList.add("good");else if(b.classList.contains("was"))b.classList.add("bad")})}
+  if(tr.type==="tokens"){
+   body.querySelectorAll(".tokbtn").forEach(b=>{const k=+b.dataset.k;const good=Array.isArray(tr.ok)&&tr.ok.includes(k);if(good&&reveal)b.classList.add("good");else if(b.classList.contains("was")&&!good)b.classList.add("bad")});
+   const ch=body.querySelector(".chipghostbtn");if(ch){if(tr.ok==="chip"&&reveal)ch.classList.add("good");else if(ch.classList.contains("was")&&tr.ok!=="chip")ch.classList.add("bad")}
+   const vb=body.querySelector(".verifybtn");if(vb)vb.hidden=true;
+  }
+  fb.className="feedback show "+(ts.lastOk?"good":"bad");
+  fb.innerHTML=(ts.lastOk?(ts.attempts===0?"✅ Esatto! ":"✅ Corretto! "):"❌ Non era questa. ")+"La risposta giusta è evidenziata."+(tr.why?`<span class="why">💡 ${tr.why}</span>`:"");
+  av.hidden=false;
+ };
+ const wrong=()=>{
+  ts.attempts++;ts.streak=0;
+  if(ts.attempts>=2||ts.timeout){ts.revealed=true;ts.answered=true;ts.lastOk=false;ts.results[ts.i]=0;clearTrialTimer();card.querySelector(".timerring").hidden=true;paint();sfx("buzz");av.focus({preventScroll:true});updatePhasebar();return}
+  sfx("buzz");card.classList.remove("shake");void card.offsetWidth;card.classList.add("shake");
+  fb.className="feedback show hint";
+  fb.innerHTML="🤔 Riprova!"+(S.settings.help!=="sfida"&&tr.hint?`<span class="why">💡 ${tr.hint}</span>`:"");
+  body.querySelectorAll(".was,.sel").forEach(b=>b.classList.remove("was","sel"));
+  if(tr.type==="tokens"&&tr.multi){ts.picked=new Set();const vb=body.querySelector(".verifybtn");if(vb)vb.disabled=true}
+ };
+ /* corpo per tipo */
+ if(tr.type==="sort"){
+  const it=document.createElement("div");it.className="itemcard"+(tr.focus?" sentence":"");
+  if(tr.focus){const idx=tr.item.indexOf(tr.focus);it.innerHTML=esc(tr.item.slice(0,idx))+"<b>"+esc(tr.focus)+"</b>"+esc(tr.item.slice(idx+tr.focus.length))}else it.textContent=tr.item;
+  body.appendChild(it);
+  const row=document.createElement("div");row.className="catrow";
+  tr.cats.forEach((c,k)=>{const b=document.createElement("button");b.className="catbtn";b.innerHTML=`<span style="font-size:.72em;opacity:.6;font-weight:800">${k+1}</span> · ${c}`;
+   b.addEventListener("click",()=>{if(ts.answered)return;b.classList.add("was");if(k===tr.ok)finish(true);else wrong()});row.appendChild(b)});
+  body.appendChild(row);
+ }
+ if(tr.type==="pick"){
+  if(!ts.perms[ts.i])ts.perms[ts.i]=shuffle(tr.opts.map((_,k)=>k));
+  const ol=document.createElement("div");ol.className="optlist";
+  ts.perms[ts.i].forEach((k,pos)=>{const b=document.createElement("button");b.className="optbtn";b.dataset.k=k;b.innerHTML=`<span class="key">${pos+1}</span><span>${esc(tr.opts[k])}</span>`;
+   b.addEventListener("click",()=>{if(ts.answered)return;b.classList.add("was");if(k===tr.ok)finish(true);else wrong()});ol.appendChild(b)});
+  body.appendChild(ol);
+ }
+ if(tr.type==="tokens"){
+  const line=document.createElement("div");line.className="tokline";
+  tr.tokens.forEach((t,k)=>{const b=document.createElement("button");b.className="tokbtn";b.dataset.k=k;b.textContent=t;
+   b.addEventListener("click",()=>{if(ts.answered)return;sfx("click");
+    if(tr.multi){if(!ts.picked)ts.picked=new Set();if(ts.picked.has(k)){ts.picked.delete(k);b.classList.remove("sel")}else{ts.picked.add(k);b.classList.add("sel")}vb.disabled=ts.picked.size===0}
+    else{b.classList.add("was");if(Array.isArray(tr.ok)&&tr.ok.length===1&&tr.ok[0]===k)finish(true);else wrong()}
+   });line.appendChild(b);line.appendChild(document.createTextNode(" "))});
+  body.appendChild(line);
+  let vb=null;
+  if(tr.chip){const ch=document.createElement("button");ch.className="chipghostbtn";ch.textContent=tr.chip;
+   ch.addEventListener("click",()=>{if(ts.answered)return;ch.classList.add("was");if(tr.ok==="chip")finish(true);else wrong()});body.appendChild(ch)}
+  if(tr.multi){vb=document.createElement("button");vb.className="btn small primary verifybtn";vb.textContent="✓ Verifica le parole scelte";vb.disabled=true;
+   vb.addEventListener("click",()=>{if(ts.answered)return;const set=ts.picked||new Set();const ok=tr.ok.length===set.size&&tr.ok.every(k=>set.has(k));
+    body.querySelectorAll(".tokbtn").forEach(b=>{if(set.has(+b.dataset.k))b.classList.add("was")});
+    if(ok)finish(true);else wrong()});body.appendChild(vb)}
+ }
+ av.addEventListener("click",()=>{sfx("click");ts.i++;ts.attempts=0;ts.answered=false;ts.revealed=false;ts.lastOk=false;ts.picked=null;ts.timeout=false;
+  if(ts.i>=list.length){ts.done=true;renderTrials(host,ts,list,opts);opts.onDone&&opts.onDone();updatePhasebar()}
+  else renderTrials(host,ts,list,opts)});
+ host.appendChild(card);
+ if(ts.answered){paint()}
+ else if(S.settings.timer){startTimer(card,ts,()=>{ts.timeout=true;wrong()})}
+}
+function startTimer(card,ts,onEnd){
+ const wrap=card.querySelector(".timerring");wrap.hidden=false;const fg=wrap.querySelector(".tfg"),sec=wrap.querySelector(".tsec");
+ let remain=20;const C=88;
+ const paintT=()=>{sec.textContent=Math.ceil(remain);fg.style.strokeDashoffset=C*(1-remain/20);wrap.classList.toggle("warn",remain<=8&&remain>4);wrap.classList.toggle("danger",remain<=4)};
+ paintT();
+ trialTimer=setInterval(()=>{if(ts.answered){clearTrialTimer();return}remain-=.1;if(remain<=5.05&&remain>0&&Math.abs(remain-Math.round(remain))<.06)sfx("tick");if(remain<=0){clearTrialTimer();remain=0;paintT();onEnd()}else paintT()},100);
+}
+
+/* ================= MISSIONE ================= */
+function enterMission(id){
+ const m=MISSIONS.find(x=>x.id===id);const i=MISSIONS.indexOf(m);
+ if(!unlocked(i)){toast("🔒 Prima risolvi il Caso "+(m.n-1)+"!");return}
+ clearTrialTimer();
+ run={m,phase:0,max:0,clues:new Set(),hyp:null,exp:newTS(),app:newTS(),rule:null,ruleDone:false,saved:false,sb:{},lensT:[]};
+ view="mission";$("#view-home").hidden=true;$("#view-notebook").hidden=true;$("#view-mission").hidden=false;setNav("#nav-mappa");
+ scrollTo(0,0);
+ $("#mbanner").innerHTML=`<button class="btn small ghost" id="backbtn">← Mappa</button>
+  <div class="blob" style="background:linear-gradient(135deg,${m.hex},${m.hex}CC)">${m.emoji}</div>
+  <div><span class="casochip" style="background:${m.hex}">Caso Nº ${m.n} · ${m.skill}</span><h2>${m.title}</h2></div>
+  <div class="objline">🎯 <b>Obiettivo:</b> ${m.obj}</div>`;
+ $("#backbtn").addEventListener("click",()=>{sfx("click");showView("home")});
+ syncPanel();renderSteps();renderPhase();sfx("whoosh");
+}
+function clueTotal(){return run.m.obs.sentences.reduce((a,s)=>a+s.tokens.filter(t=>t.clue).length,0)}
+function renderSteps(){
+ const st=$("#steps");st.innerHTML="";
+ PHASES.forEach((p,k)=>{
+  if(k>0){const l=document.createElement("span");l.className="slink";st.appendChild(l)}
+  const b=document.createElement("button");
+  const done=k<run.phase||phaseDone(k);
+  b.className="step"+(k===run.phase?" cur":done?" done":"")+(k>run.max?" lock":"");
+  b.setAttribute("aria-label","Fase "+(k+1)+": "+p.n);
+  b.innerHTML=`<span class="sic">${done&&k!==run.phase?"✓":p.ic}</span><small>${p.n}</small>`;
+  b.addEventListener("click",()=>{if(k>run.max){sfx("buzz");toast("Prima completa le fasi precedenti!");return}if(k===run.phase)return;sfx("click");run.phase=k;renderPhase()});
+  st.appendChild(b);
+ });
+}
+function phaseDone(k){if(!run)return false;switch(k){case 0:return run.clues.size>=clueTotal();case 1:return run.hyp!==null;case 2:return run.exp.done;case 3:return run.ruleDone;case 4:return run.app.done}return false}
+function updatePhasebar(){
+ if(!run)return;renderSteps();
+ const btn=$("#continuebtn"),stat=$("#pstat");let ok=false,req="";
+ switch(run.phase){
+  case 0:{const t=clueTotal();ok=run.clues.size>=t;req=`Indizi raccolti: ${run.clues.size}/${t}`;break}
+  case 1:ok=run.hyp!==null;req=ok?"Ipotesi registrata 📌":"Scegli un'ipotesi";break;
+  case 2:ok=run.exp.done;req=`Prove: ${Math.min(run.exp.i+(run.exp.answered?1:0),run.m.exp.trials.length)}/${run.m.exp.trials.length}`;break;
+  case 3:ok=run.ruleDone;req=ok?"Regola scoperta! 📜":"Completa la regola";break;
+  case 4:ok=run.app.done;req=`Caso: ${Math.min(run.app.i+(run.app.answered?1:0),run.m.apply.trials.length)}/${run.m.apply.trials.length}`;break;
+ }
+ stat.textContent=req;
+ btn.disabled=!ok;btn.innerHTML=CONT_LABEL[run.phase];
+ btn.classList.toggle("pulse",ok);
+}
+$("#continuebtn").addEventListener("click",()=>{
+ if(!run)return;sfx("whoosh");
+ if(run.phase===4){showView("home");toast("🎉 Caso "+run.m.n+" risolto! La mappa si è aggiornata.");return}
+ run.phase++;run.max=Math.max(run.max,run.phase);renderPhase();
+});
+$("#paneljump").addEventListener("click",()=>{$("#panel").scrollIntoView({behavior:"smooth",block:"start"})});
+$("#backmapbtn").addEventListener("click",()=>{sfx("click");showView("home")});
+
+function renderPhase(){
+ clearTrialTimer();if(run.lensT){run.lensT.forEach(clearTimeout);run.lensT=[]}
+ const bench=$("#bench");bench.innerHTML="";bench.classList.remove("phase-enter");void bench.offsetWidth;bench.classList.add("phase-enter");
+ const m=run.m;
+ if(run.phase===0)renderObserve(bench,m);
+ if(run.phase===1)renderHyp(bench,m);
+ if(run.phase===2)renderExp(bench,m);
+ if(run.phase===3)renderRule(bench,m);
+ if(run.phase===4){
+  if(run.app.done){renderResults(bench,m)}
+  else{const head=document.createElement("div");head.className="card";head.innerHTML=`<h3 class="ct">🚀 Applica — risolvi il caso!</h3><p class="sub">${m.apply.intro}</p>`;bench.appendChild(head);
+   const host=document.createElement("div");bench.appendChild(host);
+   renderTrials(host,run.app,m.apply.trials,{label:"Indagine finale",doneTitle:"Indagine completata!",onDone:()=>{finishApply();renderResults(bench,m)}});}
+ }
+ updatePhasebar();
+}
+
+/* ---- FASE 1: OSSERVA ---- */
+function renderObserve(bench,m){
+ const wrap=document.createElement("div");
+ wrap.innerHTML=`<div class="card"><h3 class="ct">🔍 Osserva gli indizi</h3><p class="sub">${m.obs.intro}</p></div>
+ <div class="obsgrid"><div class="sentcol"></div>
+ <div><div class="qnote"><b>❓ Domande guida</b><ul>${m.obs.questions.map(q=>`<li>${q}</li>`).join("")}</ul></div>
+ <div class="cluewrap"><h4>✏️ Taccuino degli indizi <span class="cluecount" id="cluecount">0/${clueTotal()}</span></h4><div id="cluelist"><div class="clueempty">Clicca le parole evidenziate<br>per scrivere qui gli indizi…</div></div></div></div></div>`;
+ const col=wrap.querySelector(".sentcol");
+ m.obs.sentences.forEach((s,si)=>{
+  const sc=document.createElement("div");sc.className="sent-card";sc.style.setProperty("--rot",(si%2?0.5:-0.5)+"deg");
+  s.tokens.forEach((t,ti)=>{
+   const id=si+":"+ti;
+   if(t.clue){const b=document.createElement("button");b.className="token mark"+(run.clues.has(id)?" found":"");b.textContent=t.t;
+    b.addEventListener("click",()=>{
+     if(!run.clues.has(id)){run.clues.add(id);b.classList.add("found");sfx("clue");addClue(t.t,t.clue,true);
+      $("#cluecount").textContent=run.clues.size+"/"+clueTotal();updatePhasebar();
+      if(run.clues.size>=clueTotal()){toast("🔍 Tutti gli indizi raccolti! Ora fai la tua ipotesi →");sfx("star")}}
+     else{sfx("click");const el=document.getElementById("clue-"+id.replace(":","-"));if(el){el.scrollIntoView({behavior:"smooth",block:"center"});el.classList.remove("new");void el.offsetWidth;el.classList.add("new")}}
+    });sc.appendChild(b)}
+   else{const sp=document.createElement("button");sp.className="token";sp.textContent=t.t;sp.addEventListener("click",()=>{sfx("click");toast("Qui non c'è un indizio… prova le parole evidenziate! 🖍️")});sc.appendChild(sp)}
+   sc.appendChild(document.createTextNode(" "));
+  });
+  col.appendChild(sc);
+ });
+ bench.appendChild(wrap);
+ const list=wrap.querySelector("#cluelist");
+ function addClue(word,clue,anim){
+  const empty=list.querySelector(".clueempty");if(empty)empty.remove();
+ }
+ /* ripristina indizi già raccolti (ordine frasi) */
+ m.obs.sentences.forEach((s,si)=>s.tokens.forEach((t,ti)=>{const id=si+":"+ti;if(t.clue&&run.clues.has(id))pushClue(id,t.t,t.clue,false)}));
+ $("#cluecount").textContent=run.clues.size+"/"+clueTotal();
+ function pushClue(id,word,clue,anim){
+  const list=$("#cluelist");const empty=list.querySelector(".clueempty");if(empty)empty.remove();
+  const c=document.createElement("div");c.className="cluecard"+(anim?" new":"");c.id="clue-"+id.replace(":","-");
+  c.innerHTML=`<b>${esc(word)}</b> — ${esc(clue)}`;list.appendChild(c);
+ }
+ window._pushClue=pushClue;
+ /* ricollega addClue */
+ bench.querySelectorAll(".token.mark").forEach(b=>{
+  const old=b.onclick;
+ });
+ /* sovrascrivi handler con versione che usa pushClue */
+ let idx=0;
+ m.obs.sentences.forEach((s,si)=>s.tokens.forEach((t,ti)=>{
+  if(!t.clue)return;const id=si+":"+ti;
+  const btns=[...bench.querySelectorAll(".token.mark")];const b=btns[idx++];
+  const nb=b.cloneNode(true);b.replaceWith(nb);
+  nb.addEventListener("click",()=>{
+   if(!run.clues.has(id)){run.clues.add(id);nb.classList.add("found");sfx("clue");pushClue(id,t.t,t.clue,true);
+    $("#cluecount").textContent=run.clues.size+"/"+clueTotal();updatePhasebar();
+    if(run.clues.size>=clueTotal()){toast("🔍 Tutti gli indizi raccolti! Ora fai la tua ipotesi →");sfx("star")}}
+   else{sfx("click");const el=document.getElementById("clue-"+id.replace(":","-"));if(el){el.scrollIntoView({behavior:"smooth",block:"center"});el.classList.remove("new");void el.offsetWidth;el.classList.add("new")}}
+  });
+ }));
+}
+
+/* ---- FASE 2: IPOTIZZA ---- */
+function renderHyp(bench,m){
+ const card=document.createElement("div");card.className="card";
+ card.innerHTML=`<h3 class="ct">💭 Formula la tua ipotesi</h3><p class="sub" style="font-size:1.05em;font-weight:800;color:var(--ink-deep)">${m.hyp.q}</p>`;
+ m.hyp.opts.forEach((o,k)=>{
+  const b=document.createElement("button");b.className="hypcard"+(run.hyp===k?" sel":"");
+  b.innerHTML=`<span class="letter">${"ABC"[k]}</span><span>${o.t}</span>`;
+  b.addEventListener("click",()=>{sfx("clue");run.hyp=k;card.querySelectorAll(".hypcard").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");
+   card.querySelector(".hypnote").innerHTML="📌 Ipotesi <b>"+("ABC"[k])+"</b> registrata nel taccuino. Non ti diciamo ancora se è giusta: <b>la metteremo alla prova!</b>";updatePhasebar()});
+  card.appendChild(b);
+ });
+ const note=document.createElement("p");note.className="hypnote";
+ note.innerHTML=run.hyp===null?"🧪 Ogni ipotesi merita un esperimento: scegline una, poi la verificheremo insieme!":"📌 Ipotesi <b>"+("ABC"[run.hyp])+"</b> registrata nel taccuino. Non ti diciamo ancora se è giusta: <b>la metteremo alla prova!</b>";
+ card.appendChild(note);bench.appendChild(card);
+}
+
+/* ---- FASE 3: SPERIMENTA ---- */
+function renderExp(bench,m){
+ const sb=document.createElement("div");sb.className="card sandbox";
+ sb.innerHTML=`<h3 class="ct">🧪 Banco di prova — ${m.exp.title}</h3><p class="sub">${m.exp.intro}</p>`;
+ const kinds={tester:sbTester,transform:sbTransform,question:sbQuestion,time:sbTime,lens:sbLens,qtest:sbQtest};
+ kinds[m.exp.kind](sb,m);
+ bench.appendChild(sb);
+ const head=document.createElement("div");head.className="card";head.style.paddingBottom="10px";
+ head.innerHTML=`<h3 class="ct">🔬 Metti alla prova l'ipotesi</h3><p class="sub">Ora tocca a te: prevedi il risultato usando quello che hai osservato. Sbagliare qui serve a scoprire!</p>`;
+ bench.appendChild(head);
+ const host=document.createElement("div");bench.appendChild(host);
+ renderTrials(host,run.exp,m.exp.trials,{label:"Esperimento",doneTitle:"Esperimenti conclusi! 🧪",doneMsg:"Hai messo alla prova la tua ipotesi: ora sei pronto/a per formalizzare la REGOLA.",onDone:()=>{toast("🧪 Esperimenti conclusi! Scopri la regola →");sfx("star")}});
+}
+function sbShell(sb){const c=document.createElement("div");c.className="sb-controls";const d=document.createElement("div");d.className="sb-display";const cap=document.createElement("div");cap.className="sb-cap";sb.appendChild(c);sb.appendChild(d);sb.appendChild(cap);return{c,d,cap}}
+function segBuild(opts,get,set){const s=document.createElement("div");s.className="seg";opts.forEach(o=>{const b=document.createElement("button");b.className="seg-btn"+(get()===o.v?" on":"");b.textContent=o.l;b.addEventListener("click",()=>{set(o.v);s.querySelectorAll(".seg-btn").forEach(x=>x.classList.remove("on"));b.classList.add("on");sfx("click")});s.appendChild(b)});return s}
+function chipsBuild(items,get,set){const w=document.createElement("div");w.className="wordchips";items.forEach((it,k)=>{const b=document.createElement("button");b.className="wchip"+(get()===k?" on":"");b.textContent=typeof it==="string"?it:it.label||it.w||it.show||it.gap||it.tokens.join(" ");b.addEventListener("click",()=>{set(k);w.querySelectorAll(".wchip").forEach(x=>x.classList.remove("on"));b.classList.add("on");sfx("click")});w.appendChild(b)});return w}
+
+/* sandbox: rivelatore di nomi */
+function sbTester(sb,m){
+ const st=run.sb;st.w=st.w??0;st.tests={};
+ const{c,d,cap}=sbShell(sb);
+ const words=m.exp.sandbox.words;
+ const chips=chipsBuild(words,()=>st.w,k=>{st.w=k;st.tests={};paint()});
+ c.appendChild(chips);
+ const b1=document.createElement("button");b1.className="lever";b1.innerHTML="🔎 Prova l'articolo";
+ const b2=document.createElement("button");b2.className="lever amberl";b2.innerHTML="🔢 Prova il plurale";
+ c.appendChild(b1);c.appendChild(b2);
+ b1.addEventListener("click",()=>{sfx("lever");st.tests.a=true;paint()});
+ b2.addEventListener("click",()=>{sfx("lever");st.tests.p=true;paint()});
+ function row(txt,o){const cls=o===1?"good":o===0?"bad":"meh";return`<div class="testrow ${cls}">${txt}</div>`}
+ function paint(){
+  const w=words[st.w];let h="";
+  if(st.tests.a)h+=row(w.a,w.ao);
+  if(st.tests.p)h+=row(w.p,w.po);
+  if(st.tests.a&&st.tests.p){h+=`<div class="lamp ${w.noun?"yes":"no"}">${w.noun?"✔ È UN NOME":"✘ NON È UN NOME"}<span class="tag">${w.tag}</span></div>`;if(!st.lamped){st.lamped=true;sfx(w.noun?"pop":"buzz")}}
+  else{st.lamped=false;h+=`<div style="font-weight:800;color:var(--ink-soft);font-size:.85em">Aziona entrambi i test per accendere la lampada! 💡</div>`}
+  d.innerHTML=h;
+  cap.innerHTML=st.tests.a&&st.tests.p?(w.noun?"Il nome <b>supera i test</b>: articolo o maiuscola, e indica qualcuno o qualcosa.":"Niente articolo, niente plurale: <b>non è un nome</b>… che cos'è allora?"):"Scegli una parola e aziona le leve del rivelatore!";
+ }
+ paint();
+}
+/* sandbox: fabbrica degli accordi */
+function sbTransform(sb,m){
+ const st=run.sb;st.g=st.g??0;st.n=st.n??0;st.p=st.p??0;
+ const{c,d,cap}=sbShell(sb);
+ const pairs=m.exp.sandbox.pairs;
+ c.appendChild(chipsBuild(pairs,()=>st.p,k=>{st.p=k;paint()}));
+ c.appendChild(segBuild([{l:"♂ Maschile",v:0},{l:"♀ Femminile",v:1}],()=>st.g,v=>{st.g=v;paint()}));
+ c.appendChild(segBuild([{l:"1 Singolare",v:0},{l:"2+ Plurale",v:1}],()=>st.n,v=>{st.n=v;paint()}));
+ function paint(){
+  const p=pairs[st.p],idx=st.g+2*st.n;
+  const noun=st.g?p.f:p.m,adj=p.adj[idx],art=p.art[idx];
+  const cut=w=>esc(w.slice(0,-1))+`<span class="end">${esc(w.slice(-1))}</span>`;
+  d.innerHTML=`<div class="phrase flip"><span class="artc">${art}</span> ${cut(noun)} ${cut(adj)}</div>
+   <div class="formbadge">${st.g?"Femminile":"Maschile"} · ${st.n?"Plurale":"Singolare"} → finale «-${esc(adj.slice(-1))}»</div>`;
+  cap.innerHTML="Osserva: quando cambi il nome, l'aggettivo <b>copia</b> il suo finale!";
+  sfx("lever");
+ }
+ paint();
+}
+/* sandbox: radar del soggetto */
+function sbQuestion(sb,m){
+ const st=run.sb;st.s=st.s??0;st.pred=false;st.ping=false;
+ const{c,d,cap}=sbShell(sb);
+ const sents=m.exp.sandbox.sents;
+ c.appendChild(chipsBuild(sents.map(s=>({label:s.tokens.join(" ")})),()=>st.s,k=>{st.s=k;st.ping=false;paint()}));
+ const ping=document.createElement("button");ping.className="lever";ping.innerHTML="📡 CHI? CHE COSA?";
+ ping.addEventListener("click",()=>{sfx("lever");st.ping=true;paint();setTimeout(()=>sfx("clue"),250)});
+ c.appendChild(ping);
+ const pl=document.createElement("label");pl.className="switch";pl.innerHTML=`<input type="checkbox" ${st.pred?"checked":""}><span class="track"></span>Mostra il predicato`;
+ pl.querySelector("input").addEventListener("change",e=>{st.pred=e.target.checked;sfx("click");paint()});
+ c.appendChild(pl);
+ function paint(){
+  const s=sents[st.s];
+  let h=`<div class="tokline" style="margin:0;border:none;background:none;padding:4px;font-size:1.3em">`;
+  s.tokens.forEach((t,k)=>{
+   let cls="";
+   if(st.ping&&s.subj.includes(k))cls="tok-hl-subj";
+   if(st.pred&&s.verb.includes(k))cls="tok-hl-verb";
+   h+=`<span class="${cls}" style="padding:3px 5px;border-radius:7px">${esc(t)}</span> `;
+  });
+  if(st.ping&&s.ghost)h+=`<span class="ghostchip flip">👻 (${s.ghost})</span>`;
+  h+=`</div><div class="legend"><span><i style="background:rgba(46,158,91,.5)"></i>soggetto = chi compie</span><span><i style="background:rgba(45,127,249,.5)"></i>predicato = l'azione</span></div>`;
+  d.innerHTML=h;
+  cap.innerHTML=st.ping?s.cap:"Aziona il radar con la domanda magica: <b>CHI? CHE COSA?</b>";
+ }
+ paint();
+}
+/* sandbox: macchina del tempo */
+function sbTime(sb,m){
+ const st=run.sb;st.t=st.t??2;st.v=st.v??0;
+ const{c,d,cap}=sbShell(sb);
+ const stops=m.exp.sandbox.stops,verbs=m.exp.sandbox.verbs;
+ c.appendChild(chipsBuild(verbs,()=>st.v,k=>{st.v=k;paint(false)}));
+ const dialwrap=document.createElement("div");dialwrap.className="dialwrap";
+ dialwrap.innerHTML=`<svg class="dial" viewBox="0 0 150 92" aria-hidden="true">
+   <path d="M15 82 A62 62 0 0 1 135 82" fill="none" stroke="#22357C" stroke-width="7" stroke-linecap="round"/>
+   ${stops.map((s,k)=>{const a=(-70+k*(140/3))*Math.PI/180;const x=75+56*Math.sin(a),y=82-56*Math.cos(a);return`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="7" fill="${s.hex}" stroke="#16224F" stroke-width="2.5"/>`}).join("")}
+   <g class="needle" style="transform-origin:75px 82px"><line x1="75" y1="82" x2="75" y2="30" stroke="#E23A3A" stroke-width="5.5" stroke-linecap="round"/><circle cx="75" cy="82" r="9" fill="#16224F"/><circle cx="75" cy="82" r="4" fill="#FFD449"/></g></svg>
+  <div class="slidewrap"><input type="range" class="tslider" min="0" max="3" step="1" value="${st.t}" aria-label="Leva del tempo">
+  <div class="ticklabels">${stops.map(s=>`<span>${s.name}</span>`).join("")}</div></div><span class="gear">⚙️</span>`;
+ c.appendChild(dialwrap);
+ const slider=dialwrap.querySelector(".tslider"),needle=dialwrap.querySelector(".needle"),gear=dialwrap.querySelector(".gear");
+ slider.addEventListener("input",e=>{st.t=+e.target.value;paint(true)});
+ function paint(fromSlider){
+  const s=stops[st.t],v=verbs[st.v];
+  needle.style.transform=`rotate(${-70+st.t*(140/3)}deg)`;
+  slider.value=st.t;
+  gear.classList.remove("spin");void gear.offsetWidth;gear.classList.add("spin");
+  d.innerHTML=`<span class="timechip flip" style="background:${s.hex}">⏳ ${s.when}</span>
+   <div class="phrase flip">${s.when.split(",")[0]}, io <span class="end">${v.forms[st.t]}</span>.</div>
+   <div class="formbadge">${s.name} · finale «${v.ends[st.t]}»</div>`;
+  cap.innerHTML=`Il verbo <b>${v.label}</b> cambia vestito a seconda del tempo: guarda il finale!`;
+  if(fromSlider)sfx("lever");
+ }
+ paint(false);
+}
+/* sandbox: lente espanditrice */
+function sbLens(sb,m){
+ const st=run.sb;st.mode=st.mode??"un";st.i=st.i??0;
+ const{c,d,cap}=sbShell(sb);
+ const modes=segBuild([{l:"UN / UN'",v:"un"},{l:"E / È",v:"e"}],()=>st.mode,v=>{st.mode=v;st.i=0;rebuildChips();reset()});
+ c.appendChild(modes);
+ let chipsHolder=document.createElement("span");c.appendChild(chipsHolder);
+ const lever=document.createElement("button");lever.className="lever";c.appendChild(lever);
+ function items(){return st.mode==="un"?m.exp.sandbox.un:m.exp.sandbox.e}
+ function rebuildChips(){const old=chipsHolder.querySelector(".wordchips");if(old)old.remove();const ch=chipsBuild(items(),()=>st.i,k=>{st.i=k;reset()});chipsHolder.appendChild(ch);lever.innerHTML=st.mode==="un"?"🔦 ESPANDI!":"🔦 SOSTITUISCI CON «ESSERE»"}
+ function reset(){run.lensT.forEach(clearTimeout);run.lensT=[];const it=items()[st.i];
+  d.innerHTML=`<div class="lensline">${esc(st.mode==="un"?it.show:it.gap)}</div><div style="font-weight:800;color:var(--ink-soft);font-size:.85em">Tira la leva della lente! 🔦</div>`;
+  cap.innerHTML=st.mode==="un"?"Che cosa si nasconde dietro «un» e «un'»? <b>Espandilo!</b>":"«è» o «e»? Prova a sostituire con <b>ESSERE</b>!";}
+ lever.addEventListener("click",()=>{
+  sfx("lever");run.lensT.forEach(clearTimeout);run.lensT=[];const it=items()[st.i];
+  if(st.mode==="un"){
+   d.innerHTML=`<div class="lensline">${esc(it.show)}</div><div class="lensarrow">⤵</div><div class="lensline" style="opacity:.35">…</div>`;
+   run.lensT.push(setTimeout(()=>{
+    let full=esc(it.full);
+    if(it.drop){const w=it.full.split(" ");full=esc(w[0].slice(0,-1))+`<span class="drop">${esc(w[0].slice(-1))}</span> `+esc(w.slice(1).join(" "))}
+    d.innerHTML=`<div class="lensline">${esc(it.show)}</div><div class="lensarrow">⤵</div><div class="lensline flip">${full}</div>`;sfx("clue");
+   },420));
+   run.lensT.push(setTimeout(()=>{
+    d.innerHTML+=`<div class="verdict ${it.apost?"yes":"no"} flip">${it.apost?"✂️ La vocale cade → APOSTROFO!":"🛡️ Nessuna caduta → NIENTE apostrofo"}</div>`;
+    cap.innerHTML=`<b>${esc(it.note)}</b>`;sfx(it.apost?"pop":"click");
+   },950));
+  }else{
+   d.innerHTML=`<div class="lensline">${esc(it.gap)}</div><div class="lensarrow">⤵</div><div class="lensline" style="opacity:.35">…</div>`;
+   run.lensT.push(setTimeout(()=>{
+    d.innerHTML=`<div class="lensline">${esc(it.gap)}</div><div class="lensarrow">⤵</div><div class="lensline flip">${esc(it.test)}</div>`;sfx("clue");
+   },420));
+   run.lensT.push(setTimeout(()=>{
+    d.innerHTML+=`<div class="verdict ${it.sense?"yes":"no"} flip">${it.sense?"✓ Ha senso → è il verbo ESSERE → «è» con accento!":"✗ Non ha senso → unisce e basta → «e» senza accento"}</div>`;
+    cap.innerHTML=`La frase con ESSERE ${it.sense?"<b>funziona</b>: accento!":"<b>non funziona</b>: niente accento!"} Risposta: <b>${it.ans}</b>`;sfx(it.sense?"pop":"click");
+   },950));
+  }
+ });
+ rebuildChips();reset();
+}
+/* sandbox: smistapacchi */
+function sbQtest(sb,m){
+ const st=run.sb;st.s=st.s??0;
+ const{c,d,cap}=sbShell(sb);
+ const sents=m.exp.sandbox.sents;
+ c.appendChild(chipsBuild(sents.map(s=>({label:s.tokens.join(" ")})),()=>st.s,k=>{st.s=k;paint(null)}));
+ const b1=document.createElement("button");b1.className="lever";b1.innerHTML="📦 CHI? CHE COSA?";
+ const b2=document.createElement("button");b2.className="lever amberl";b2.innerHTML="🧭 A CHI? DOVE? CON CHI?";
+ c.appendChild(b1);c.appendChild(b2);
+ b1.addEventListener("click",()=>{sfx("lever");paint("obj")});
+ b2.addEventListener("click",()=>{sfx("lever");paint("ind")});
+ function paint(mode){
+  const s=sents[st.s];const target=mode==="obj"?s.obj:mode==="ind"?s.ind:null;
+  let h=`<div class="tokline" style="margin:0;border:none;background:none;padding:4px;font-size:1.3em">`;
+  s.tokens.forEach((t,k)=>{
+   let cls="";
+   if(mode==="obj"&&s.obj&&s.obj.includes(k))cls="tok-hl-obj";
+   if(mode==="ind"&&s.ind&&s.ind.includes(k))cls="tok-hl-ind";
+   h+=`<span class="${cls}" style="padding:3px 5px;border-radius:7px">${esc(t)}</span> `;
+  });
+  h+=`</div><div class="legend"><span><i style="background:rgba(46,158,91,.5)"></i>oggetto = pacchetto diretto</span><span><i style="background:rgba(232,79,175,.5)"></i>indiretto = con il corriere-preposizione</span></div>`;
+  d.innerHTML=h;
+  if(!mode){cap.innerHTML="Lancia una domanda e guarda dove atterra il pacchetto!";return}
+  if(mode==="obj"){
+   if(s.obj){cap.innerHTML=`${s.v.toUpperCase()} <b>CHI? CHE COSA?</b> → ${esc(s.obj.map(k=>s.tokens[k]).join(" "))} ✓ pacchetto diretto!`;sfx("pop")}
+   else{d.classList.remove("shake");void d.offsetWidth;d.classList.add("shake");cap.innerHTML=`«${s.v} CHI? CHE COSA?» ✗ non funziona: c'è una <b>preposizione</b> in mezzo!`;sfx("buzz")}
+  }else{
+   if(s.ind){cap.innerHTML=`<b>A CHI? DOVE? CON CHI?</b> → ${esc(s.ind.map(k=>s.tokens[k]).join(" "))} ✓ con il corriere-preposizione → indiretto!`;sfx("pop")}
+   else{d.classList.remove("shake");void d.offsetWidth;d.classList.add("shake");cap.innerHTML="Qui non c'è nessun «a chi? dove? con chi?»… solo un pacchetto <b>diretto</b>!";sfx("buzz")}
+  }
+ }
+ paint(null);
+}
+
+/* ---- FASE 4: CONCLUDI ---- */
+function renderRule(bench,m){
+ const answers=[];m.rule.parts.forEach(p=>{if(typeof p==="object")answers.push(p.b)});
+ if(!run.rule)run.rule={fills:Array(answers.length).fill(null),locked:Array(answers.length).fill(false)};
+ const R=run.rule;
+ if(R.locked.every(Boolean))run.ruleDone=true;
+ const card=document.createElement("div");card.className="card";
+ const chosen=run.hyp!==null?m.hyp.opts[run.hyp]:null;
+ const conf=chosen&&chosen.ok;
+ let vh="";
+ if(chosen)vh=`<div class="hypverdict ${conf?"conf":"rev"}"><span style="font-size:1.4em">${conf?"✅":"🔄"}</span><span><b>La tua ipotesi ${"ABC"[run.hyp]}:</b> «${chosen.t}»<br>${conf?"Confermata dagli esperimenti: ottimo fiuto, investigatore!":"Gli esperimenti l'hanno corretta: è così che lavorano i veri scienziati! La regola giusta è qui sotto."}</span></div>`;
+ card.innerHTML=`<h3 class="ct">📜 Concludi — scrivi la regola scoperta</h3><p class="sub">Completa la regola con le parole della banca. Clicca una parola per inserirla nel primo spazio libero; clicca uno spazio per liberarlo.</p>${vh}<div class="ruletext" id="ruletext"></div>
+ <div class="bank" id="bank"><span class="blabel">🏦 Banca delle parole (attento: ci sono intruse!)</span></div>
+ <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn primary small" id="rulecheck">✓ Verifica la regola</button></div>
+ <div class="rulestamp" id="rulestamp">📜 REGOLA SCOPERTA ✔</div>
+ <div id="ruleafter"></div>`;
+ const rt=card.querySelector("#ruletext");
+ let bi=0;
+ m.rule.parts.forEach(p=>{
+  if(typeof p==="string"){const sp=document.createElement("span");sp.textContent=p;rt.appendChild(sp)}
+  else{const k=bi++;const s=document.createElement("button");s.className="slot";s.dataset.k=k;s.style.minWidth=(p.b.length+2)+"ch";
+   s.addEventListener("click",()=>{if(R.locked[k])return;if(R.fills[k]){R.fills[k]=null;sfx("click");paint()}});rt.appendChild(s);rt.appendChild(document.createTextNode(" "))}
+ });
+ const bank=card.querySelector("#bank");
+ const bankWords=shuffle(m.rule.bank);
+ bankWords.forEach(w=>{const b=document.createElement("button");b.className="bchip";b.textContent=w;b.dataset.w=w;
+  b.addEventListener("click",()=>{if(run.ruleDone)return;const free=R.fills.findIndex((f,k)=>!f&&!R.locked[k]);
+   if(free===-1){toast("Tutti gli spazi sono pieni: clicca uno spazio per liberarlo!");return}
+   R.fills[free]=w;sfx("clue");paint()});
+  bank.appendChild(b)});
+ function paint(){
+  rt.querySelectorAll(".slot").forEach(s=>{const k=+s.dataset.k;s.textContent=R.fills[k]||"…";s.classList.toggle("filled",!!R.fills[k]);s.classList.toggle("locked",R.locked[k])});
+  bank.querySelectorAll(".bchip").forEach(b=>{b.classList.toggle("used",R.fills.includes(b.dataset.w))});
+  if(run.ruleDone){
+   card.querySelector("#rulecheck").hidden=true;
+   card.querySelector("#rulestamp").classList.add("show");
+   card.querySelector("#ruleafter").innerHTML=`<div class="rulefull">📓 ${m.rule.full}<br><b>Aggiunta al Quaderno delle Scoperte!</b></div>`;
+   bank.querySelectorAll(".bchip").forEach(b=>b.disabled=true);
+  }
+ }
+ card.querySelector("#rulecheck").addEventListener("click",()=>{
+  let all=true,any=false;
+  rt.querySelectorAll(".slot").forEach(s=>{const k=+s.dataset.k;if(R.locked[k])return;any=true;
+   if(R.fills[k]===answers[k]){R.locked[k]=true}
+   else{all=false;s.classList.remove("err");void s.offsetWidth;s.classList.add("err");R.fills[k]=null}});
+  if(R.locked.every(Boolean)){run.ruleDone=true;if(!S.rules[m.id]){S.rules[m.id]={date:Date.now()};save();renderHeader()}
+   sfx("stamp");setTimeout(()=>sfx("fanfare"),250);toast("📜 Regola scoperta e salvata nel quaderno!");updatePhasebar()}
+  else{sfx(any?"buzz":"click");if(!any)toast("Inserisci almeno una parola dalla banca!");else toast("🤔 Qualche parola è tornata nella banca: riprova!")}
+  paint();
+ });
+ paint();bench.appendChild(card);
+}
+
+/* ---- FASE 5: RISULTATI ---- */
+function finishApply(){
+ if(run.saved)return;run.saved=true;
+ const total=run.m.apply.trials.length,ratio=run.app.first/total;
+ const stars=ratio>=.9?3:ratio>=.6?2:1;
+ const prev=S.progress[run.m.id]||{};
+ S.progress[run.m.id]={done:true,stars:Math.max(prev.stars||0,stars),score:run.app.first,total,at:Date.now()};
+ if(!S.rules[run.m.id]){S.rules[run.m.id]={date:Date.now()}}
+ save();renderHeader();
+}
+function renderResults(bench,m){
+ clearTrialTimer();bench.innerHTML="";
+ const pr=S.progress[m.id]||{};const stars=pr.stars||1;
+ const total=m.apply.trials.length;
+ const wrap=document.createElement("div");wrap.className="card results phase-enter";
+ const msgs=["Caso risolto! La tua lente non sbaglia un colpo.","Ottimo lavoro, investigatore: la regola ora è tua!","Continua a indagare: ogni errore ti rende più forte!"];
+ wrap.innerHTML=`<div class="stamp">CASO Nº ${m.n} RISOLTO!</div>
+  <div class="bigstars">${[1,2,3].map(k=>`<span class="bstar" data-k="${k}">★</span>`).join("")}</div>
+  <div class="scoreline">🧪 Esperimenti: <b>${run.exp.first}/${m.exp.trials.length}</b> al primo colpo · 🚀 Indagine finale: <b>${run.app.first}/${total}</b></div>
+  <div class="scoreline">Grado attuale: <b>${rankName()}</b> · Stelle totali: <b>${totalStars()}/18</b></div>
+  <div class="resmsg">${stars===3?msgs[0]:stars===2?msgs[1]:msgs[2]}</div>
+  <div class="resbtns">
+   <button class="btn" id="resmap">🗺️ Mappa dei casi</button>
+   <button class="btn sunny" id="resnb">📓 Quaderno delle scoperte</button>
+   ${m.n<6?`<button class="btn primary" id="resnext">Caso ${m.n+1} →</button>`:`<button class="btn primary" id="resnext">🏆 Sei una Leggenda!</button>`}
+  </div>`;
+ bench.appendChild(wrap);
+ const rid=run;
+ wrap.querySelectorAll(".bstar").forEach(s=>{const k=+s.dataset.k;if(k<=stars)setTimeout(()=>{if(run!==rid||view!=="mission")return;s.classList.add("on");sfx("star")},350+k*380)});
+ setTimeout(()=>{if(run!==rid||view!=="mission")return;sfx("fanfare");boom(stars===3?190:stars===2?130:80)},400);
+ setTimeout(()=>{if(run!==rid)return;sfx("stamp")},120);
+ wrap.querySelector("#resmap").addEventListener("click",()=>{sfx("click");showView("home")});
+ wrap.querySelector("#resnb").addEventListener("click",()=>{sfx("click");showView("notebook")});
+ wrap.querySelector("#resnext").addEventListener("click",()=>{sfx("whoosh");if(m.n<6)enterMission(MISSIONS[m.n].id);else{showView("home");toast("🏆 Tutti i casi risolti: sei una Leggenda delle Parole!")}});
+ updatePhasebar();
+}
+
+/* ================= PANNELLO ================= */
+function syncPanel(){
+ $$("#seg-help .seg-btn").forEach(b=>b.classList.toggle("on",b.dataset.v===S.settings.help));
+ $$("#swatches .sw").forEach(b=>b.classList.toggle("on",b.dataset.c===S.settings.hl));
+ $("#sizeslider").value=S.settings.size;$("#sizeval").textContent=S.settings.size+"%";
+ $("#hilegchk").checked=S.settings.hileg;$("#timerchk").checked=S.settings.timer;$("#soundchk").checked=S.settings.sound;
+ applySettings();
+}
+function applySettings(){
+ document.documentElement.style.setProperty("--hl",S.settings.hl);
+ document.documentElement.style.setProperty("--hl-soft",S.settings.hl+"8C");
+ document.documentElement.style.setProperty("--tscale",S.settings.size/100);
+ document.body.classList.toggle("hileg",S.settings.hileg);
+}
+$("#seg-help").addEventListener("click",e=>{const b=e.target.closest(".seg-btn");if(!b)return;S.settings.help=b.dataset.v;save();sfx("click");syncPanel();if(run&&(run.phase===2||run.phase===4)&&!phaseDone(run.phase))renderPhase();toast(b.dataset.v==="guidato"?"🤝 Aiuti sempre visibili":b.dataset.v==="sfida"?"⚡ Modalità sfida: niente suggerimenti!":"🧭 Suggerimenti su richiesta")});
+$("#swatches").addEventListener("click",e=>{const b=e.target.closest(".sw");if(!b)return;S.settings.hl=b.dataset.c;save();sfx("click");syncPanel()});
+$("#sizeslider").addEventListener("input",e=>{S.settings.size=+e.target.value;$("#sizeval").textContent=S.settings.size+"%";applySettings()});
+$("#sizeslider").addEventListener("change",save);
+$("#hilegchk").addEventListener("change",e=>{S.settings.hileg=e.target.checked;save();applySettings();sfx("click");toast(S.settings.hileg?"🔠 Font ad alta leggibilità attivo":"Font standard del laboratorio")});
+$("#timerchk").addEventListener("change",e=>{S.settings.timer=e.target.checked;save();sfx("click");
+ const ct=curTrials();
+ if(ct&&!ct.ts.done){if(S.settings.timer&&!ct.ts.answered){const card=$("#bench .trialcard");if(card)startTimer(card,ct.ts,()=>{ct.ts.timeout=true;ct.ts.attempts=2;ct.ts.revealed=true;ct.ts.answered=true;ct.ts.lastOk=false;ct.ts.results[ct.ts.i]=0;clearTrialTimer();renderPhase()})}else clearTrialTimer()}
+ toast(S.settings.timer?"⏱️ Sfida a tempo attiva: 20 secondi a prova!":"Sfida a tempo disattivata: indaga con calma")});
+$("#soundchk").addEventListener("change",e=>{S.settings.sound=e.target.checked;save();renderHeader();if(S.settings.sound)sfx("pop")});
+$("#hintbtn").addEventListener("click",()=>{
+ if(!run)return;const ct=curTrials();
+ if(!ct||ct.ts.done||ct.ts.answered){toast("💡 I suggerimenti arrivano durante le prove!");return}
+ if(S.settings.help==="sfida"){sfx("buzz");toast("⚡ In modalità Sfida i suggerimenti sono disattivati!");return}
+ const tr=ct.list[ct.ts.i];const fb=$("#bench .trialcard .feedback");
+ if(fb&&tr.hint){fb.className="feedback show hint";fb.innerHTML=`💡 Suggerimento: <span class="why">${tr.hint}</span>`;sfx("clue")}
+});
+$("#shufflebtn").addEventListener("click",()=>{
+ if(!run)return;const ct=curTrials();
+ if(!ct||ct.ts.done){toast("🔀 Niente da rimescolare qui!");return}
+ /* rimescola le prove rimanenti mantenendo i risultati */
+ const from=ct.ts.i+(ct.ts.answered?1:0);
+ const idxs=ct.list.map((_,k)=>k);const head=idxs.slice(0,from),tail=shuffle(idxs.slice(from));
+ const order=head.concat(tail);
+ ct.list.splice(0,ct.list.length,...order.map(k=>ct.list[k]));
+ ct.ts.perms={};sfx("whoosh");toast("🔀 Prove rimescolate!");
+ if(!ct.ts.answered)renderPhase();
+});
+$("#restartbtn").addEventListener("click",()=>{
+ if(!run)return;sfx("whoosh");
+ switch(run.phase){
+  case 0:run.clues=new Set();break;
+  case 1:run.hyp=null;break;
+  case 2:run.exp=newTS();break;
+  case 3:run.rule=null;run.ruleDone=false;break;
+  case 4:run.app=newTS();break;
+ }
+ renderPhase();toast("↺ Fase ricominciata da capo!");
+});
+$("#exportbtn2").addEventListener("click",exportTxt);
+
+/* ================= TASTIERA ================= */
+document.addEventListener("keydown",e=>{
+ if(["INPUT","TEXTAREA","SELECT"].includes(e.target.tagName))return;
+ if(view!=="mission"||!run)return;
+ if(e.key==="Enter"){const av=$("#bench .avanti");if(av&&!av.hidden){e.preventDefault();av.click();return}
+  const vb=$("#bench .verifybtn");if(vb&&!vb.hidden&&!vb.disabled){e.preventDefault();vb.click()}}
+ if(/^[1-9]$/.test(e.key)){const ct=curTrials();if(ct&&!ct.ts.done&&!ct.ts.answered){const btns=$$("#bench .trialcard .optbtn, #bench .trialcard .catbtn");const b=btns[+e.key-1];if(b&&!b.disabled)b.click()}}
+});
+
+/* ================= SPIRALE + AVVIO ================= */
+(function(){const sp=$("#spiral");const n=Math.ceil(innerWidth/34);for(let i=0;i<n;i++)sp.appendChild(document.createElement("i"))})();
+renderHeader();applySettings();renderHome();showView("home");
+if(doneCount()===0&&!S.name)setTimeout(()=>toast("👋 Benvenuto/a al Laboratorio! Scrivi il tuo nome in codice e inizia dal Caso 1."),900);
+</script>
+</body>
+</html>
